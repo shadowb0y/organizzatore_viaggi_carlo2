@@ -27,6 +27,11 @@ if "file_generati" not in st.session_state:
 # === FUNZIONI ===
 def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
     df_aziende = pd.read_csv(csv_path, dtype={"ID Progetto": str})
+
+
+    df_aziende = df_aziende.sort_values("ID Progetto").reset_index(drop=True)
+
+
     df_aziende = df_aziende.drop_duplicates(subset="Indirizzo", keep="first")
 
     valid_ids = df_aziende["ID Progetto"].tolist()
@@ -55,7 +60,9 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
 
     while non_visitati:
         if not blocco_corrente:
-            current = non_visitati.pop()
+            current = sorted(non_visitati)[0]
+            non_visitati.remove(current)
+
             blocco_corrente = [current]
             tempo_totale = tempo_visita
         else:
