@@ -110,6 +110,9 @@ if "file_generati" not in st.session_state:
 
 
 def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+
     import networkx as nx
     from networkx.algorithms.approximation import traveling_salesman_problem, greedy_tsp
 
@@ -149,6 +152,9 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
     tempo_totale = 0
 
     for i in range(len(tsp_path)):
+        progress_bar.progress(i / len(tsp_path))
+        status_text.text(f"🚗 Elaborazione visita {i + 1} / {len(tsp_path)}")
+
         current_id = tsp_path[i]
         if not blocco_corrente:
             blocco_corrente.append(current_id)
@@ -189,6 +195,9 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
 
     df_blocchi = pd.DataFrame(output_rows)
     df_blocchi.to_csv("blocchi_senza_ritorno.csv", index=False, encoding="utf-8-sig")
+    progress_bar.empty()
+    status_text.text("✅ Calcolo completato")
+
     return df_blocchi
 
 
