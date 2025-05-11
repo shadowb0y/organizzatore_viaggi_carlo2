@@ -2,4 +2,6 @@ streamlit
 pandas
 folium
 openpyxl
-numpy
+tqdm
+networkx
+urllib3

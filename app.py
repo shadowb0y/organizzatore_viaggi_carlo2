@@ -24,69 +24,151 @@ tempo_massimo = st.number_input("Tempo massimo per blocco (secondi)", value=DEFA
 if "file_generati" not in st.session_state:
     st.session_state["file_generati"] = False
 
-# === FUNZIONI ===
+# # === FUNZIONI ===
+# def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
+#     df_aziende = pd.read_csv(csv_path, dtype={"ID Progetto": str})
+
+
+#     df_aziende = df_aziende.sort_values("ID Progetto").reset_index(drop=True)
+
+
+#     df_aziende = df_aziende.drop_duplicates(subset="Indirizzo", keep="first")
+
+#     valid_ids = df_aziende["ID Progetto"].tolist()
+#     id2idx = {k: i for i, k in enumerate(valid_ids)}
+#     idx2id = {i: k for k, i in id2idx.items()}
+#     N = len(valid_ids)
+
+#     with open(json_path, "r", encoding="utf-8") as f:
+#         raw = json.load(f)
+
+#     matrice = [[0] * N for _ in range(N)]
+#     for key, val in raw.items():
+#         if val is None:
+#             continue
+#         start, end = key.split(" -> ")
+#         if start in id2idx and end in id2idx:
+#             i, j = id2idx[start], id2idx[end]
+#             matrice[i][j] = val
+
+#     info_aziende = df_aziende.set_index("ID Progetto")[["Indirizzo", "Imprese"]].to_dict("index")
+
+#     non_visitati = set(valid_ids)
+#     blocchi = []
+#     blocco_corrente = []
+#     tempo_totale = 0
+
+#     while non_visitati:
+#         if not blocco_corrente:
+#             current = sorted(non_visitati)[0]
+#             non_visitati.remove(current)
+
+#             blocco_corrente = [current]
+#             tempo_totale = tempo_visita
+#         else:
+#             ultimo = blocco_corrente[-1]
+#             candidati = [(c, matrice[id2idx[ultimo]][id2idx[c]]) for c in non_visitati if matrice[id2idx[ultimo]][id2idx[c]] > 0]
+#             candidati.sort(key=lambda x: x[1])
+
+#             aggiunto = False
+#             for candidato, travel_time in candidati:
+#                 tempo_potenziale = tempo_totale + travel_time + tempo_visita
+#                 if tempo_potenziale <= tempo_massimo:
+#                     blocco_corrente.append(candidato)
+#                     tempo_totale = tempo_potenziale
+#                     non_visitati.remove(candidato)
+#                     aggiunto = True
+#                     break
+
+#             if not aggiunto:
+#                 blocchi.append(blocco_corrente)
+#                 blocco_corrente = []
+
+#     if blocco_corrente:
+#         blocchi.append(blocco_corrente)
+
+#     output_rows = []
+#     for i, blocco in enumerate(blocchi, start=1):
+#         tempo_cumulato = 0
+#         for ordine, id_ in enumerate(blocco, start=1):
+#             info = info_aziende.get(id_, {"Indirizzo": "", "Imprese": ""})
+#             output_rows.append({
+#                 "Blocco": i,
+#                 "Ordine": ordine,
+#                 "ID Progetto": id_,
+#                 "Indirizzo": info["Indirizzo"],
+#                 "Impresa": info["Imprese"],
+#                 "Tempo cumulato (s)": tempo_cumulato
+#             })
+#             if ordine < len(blocco):
+#                 next_id = blocco[ordine]
+#                 tempo_cumulato += matrice[id2idx[id_]][id2idx[next_id]] + tempo_visita
+
+#     df_blocchi = pd.DataFrame(output_rows)
+#     df_blocchi.to_csv("blocchi_senza_ritorno.csv", index=False, encoding="utf-8-sig")
+#     return df_blocchi
+
+
 def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
+    import networkx as nx
+    from networkx.algorithms.approximation import traveling_salesman_problem, greedy_tsp
+
     df_aziende = pd.read_csv(csv_path, dtype={"ID Progetto": str})
-
-
-    df_aziende = df_aziende.sort_values("ID Progetto").reset_index(drop=True)
-
-
     df_aziende = df_aziende.drop_duplicates(subset="Indirizzo", keep="first")
+    info_aziende = df_aziende.set_index("ID Progetto")[["Indirizzo", "Imprese"]].to_dict("index")
 
     valid_ids = df_aziende["ID Progetto"].tolist()
     id2idx = {k: i for i, k in enumerate(valid_ids)}
     idx2id = {i: k for k, i in id2idx.items()}
-    N = len(valid_ids)
 
     with open(json_path, "r", encoding="utf-8") as f:
         raw = json.load(f)
 
-    matrice = [[0] * N for _ in range(N)]
+    # === CREA GRAFO NON DIRETTO CON CONNESSIONI < 60 MIN ===
+    G = nx.Graph()
     for key, val in raw.items():
-        if val is None:
+        if val is None or val >= 3600:
             continue
         start, end = key.split(" -> ")
         if start in id2idx and end in id2idx:
-            i, j = id2idx[start], id2idx[end]
-            matrice[i][j] = val
+            G.add_edge(start, end, weight=val)
 
-    info_aziende = df_aziende.set_index("ID Progetto")[["Indirizzo", "Imprese"]].to_dict("index")
+    # Mantieni solo la componente connessa più grande
+    G = G.subgraph(max(nx.connected_components(G), key=len)).copy()
 
-    non_visitati = set(valid_ids)
+    # Calcolo TSP greedy
+    tsp_path = traveling_salesman_problem(G, weight='weight', cycle=False, method=greedy_tsp)
+
+    # Rimuove duplicati
+    seen = set()
+    tsp_path = [x for x in tsp_path if not (x in seen or seen.add(x))]
+
+    # === DIVISIONE IN BLOCCHI ===
     blocchi = []
     blocco_corrente = []
     tempo_totale = 0
 
-    while non_visitati:
+    for i in range(len(tsp_path)):
+        current_id = tsp_path[i]
         if not blocco_corrente:
-            current = sorted(non_visitati)[0]
-            non_visitati.remove(current)
-
-            blocco_corrente = [current]
+            blocco_corrente.append(current_id)
             tempo_totale = tempo_visita
         else:
-            ultimo = blocco_corrente[-1]
-            candidati = [(c, matrice[id2idx[ultimo]][id2idx[c]]) for c in non_visitati if matrice[id2idx[ultimo]][id2idx[c]] > 0]
-            candidati.sort(key=lambda x: x[1])
-
-            aggiunto = False
-            for candidato, travel_time in candidati:
-                tempo_potenziale = tempo_totale + travel_time + tempo_visita
-                if tempo_potenziale <= tempo_massimo:
-                    blocco_corrente.append(candidato)
-                    tempo_totale = tempo_potenziale
-                    non_visitati.remove(candidato)
-                    aggiunto = True
-                    break
-
-            if not aggiunto:
+            prev_id = blocco_corrente[-1]
+            travel_time = G[prev_id][current_id]["weight"] if G.has_edge(prev_id, current_id) else 0
+            tempo_potenziale = tempo_totale + travel_time + tempo_visita
+            if tempo_potenziale <= tempo_massimo:
+                blocco_corrente.append(current_id)
+                tempo_totale = tempo_potenziale
+            else:
                 blocchi.append(blocco_corrente)
-                blocco_corrente = []
+                blocco_corrente = [current_id]
+                tempo_totale = tempo_visita
 
     if blocco_corrente:
         blocchi.append(blocco_corrente)
 
+    # === COSTRUISCI RIGHE PER CSV ===
     output_rows = []
     for i, blocco in enumerate(blocchi, start=1):
         tempo_cumulato = 0
@@ -102,11 +184,22 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
             })
             if ordine < len(blocco):
                 next_id = blocco[ordine]
-                tempo_cumulato += matrice[id2idx[id_]][id2idx[next_id]] + tempo_visita
+                if G.has_edge(id_, next_id):
+                    tempo_cumulato += G[id_][next_id]['weight'] + tempo_visita
 
     df_blocchi = pd.DataFrame(output_rows)
     df_blocchi.to_csv("blocchi_senza_ritorno.csv", index=False, encoding="utf-8-sig")
     return df_blocchi
+
+
+
+
+
+
+
+
+
+
 
 def completa_blocchi(df_blocchi, csv_path):
     df_geo = pd.read_csv(csv_path, dtype={"ID Progetto": str})
