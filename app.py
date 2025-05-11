@@ -20,12 +20,9 @@ json_path = st.text_input("Percorso del file matrice_durate.json")
 tempo_visita = st.number_input("Tempo visita per azienda (secondi)", value=DEFAULT_TEMPO_VISITA)
 tempo_massimo = st.number_input("Tempo massimo per blocco (secondi)", value=DEFAULT_TEMPO_MASSIMO)
 
-if "file_generati" not in st.session_state:
-    st.session_state["file_generati"] = False
-
 if st.button("Genera blocchi"):
     if not os.path.exists(csv_path) or not os.path.exists(json_path):
-        st.error("\u26a0\ufe0f Verifica che i file esistano nei percorsi indicati.")
+        st.error("⚠️ Verifica che i file esistano nei percorsi indicati.")
     else:
         df = pd.read_csv(csv_path)
         df = df.drop_duplicates(subset="Indirizzo")
@@ -99,10 +96,11 @@ if st.button("Genera blocchi"):
 
         df_blocchi = pd.DataFrame(blocchi)
         df_blocchi.to_csv("blocchi_senza_ritorno.csv", index=False, encoding="utf-8-sig")
-        st.success("\u2705 File blocchi_senza_ritorno.csv generato")
+        st.success("✅ File blocchi_senza_ritorno.csv generato")
         st.dataframe(df_blocchi)
-        st.download_button("\ud83d\udcc5 Scarica blocchi", data=df_blocchi.to_csv(index=False).encode('utf-8-sig'), file_name="blocchi_senza_ritorno.csv", mime="text/csv")
+        st.download_button("📥 Scarica blocchi", data=df_blocchi.to_csv(index=False).encode('utf-8-sig'), file_name="blocchi_senza_ritorno.csv", mime="text/csv")
 
+        # === PARTE 2: COMPLETA I BLOCCHI ===
         df_geo = pd.read_csv(csv_path)
         df_blocchi["ID Progetto"] = df_blocchi["ID Progetto"].astype(str)
         df_geo["ID Progetto"] = df_geo["ID Progetto"].astype(str)
@@ -169,8 +167,9 @@ if st.button("Genera blocchi"):
             for blocco, df_b in df_blocchi.groupby("Blocco"):
                 df_b.to_excel(writer, sheet_name=f"Blocco_{blocco}", index=False)
 
-        st.success("\u2705 File salvati: blocco_completo.csv + blocchi_multi_foglio.xlsx")
+        st.success("✅ File salvati: blocco_completo.csv + blocchi_multi_foglio.xlsx")
 
+        # === MAPPA ===
         df_map = df_blocchi.merge(df_geo[["ID Progetto", "Latitudine", "Longitudine"]], on="ID Progetto", how="left")
         df_map.dropna(subset=["Latitudine", "Longitudine"], inplace=True)
         df_map["Latitudine"] = df_map["Latitudine"].astype(float)
@@ -203,16 +202,21 @@ if st.button("Genera blocchi"):
             ).add_to(marker_cluster)
 
         mappa.save("mappa_blocchi_senza_ritorno.html")
-        st.success("\U0001f5fa\ufe0f Mappa salvata come: mappa_blocchi_senza_ritorno.html")
+        st.success("🗺️ Mappa salvata come: mappa_blocchi_senza_ritorno.html")
         st.session_state["file_generati"] = True
 
+
+# === GESTIONE DOWNLOAD SEMPRE VISIBILI ===
+if "file_generati" not in st.session_state:
+    st.session_state["file_generati"] = False
+
 if st.session_state.get("file_generati", False):
-    st.markdown("### \ud83d\udcc2 Scarica file generati")
+    st.markdown("### 📂 Scarica file generati")
     with open("blocco_completo.csv", "rb") as f:
-        st.download_button("\ud83d\udcc5 Scarica blocco_completo.csv", f, file_name="blocco_completo.csv")
+        st.download_button("📥 Scarica blocco_completo.csv", f, file_name="blocco_completo.csv")
 
     with open("blocchi_multi_foglio.xlsx", "rb") as f:
-        st.download_button("\ud83d\udcc5 Scarica blocchi_multi_foglio.xlsx", f, file_name="blocchi_multi_foglio.xlsx")
+        st.download_button("📥 Scarica blocchi_multi_foglio.xlsx", f, file_name="blocchi_multi_foglio.xlsx")
 
     with open("mappa_blocchi_senza_ritorno.html", "rb") as f:
-        st.download_button("\ud83d\udcc5 Scarica mappa HTML", f, file_name="mappa_blocchi_senza_ritorno.html")
+        st.download_button("📥 Scarica mappa HTML", f, file_name="mappa_blocchi_senza_ritorno.html")
