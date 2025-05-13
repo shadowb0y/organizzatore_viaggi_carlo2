@@ -63,8 +63,8 @@ def completa_blocchi(df_blocchi, csv_path):
     df_blocchi["Blocco"] = df_blocchi["Blocco"].map(nuovi_blocchi)
     df_blocchi = df_blocchi.sort_values(by=["Blocco", "Ordine"])
 
-    df_blocchi.to_csv("blocco_completo.csv", index=False, encoding="utf-8-sig")
-    with pd.ExcelWriter("blocchi_multi_foglio.xlsx", engine="openpyxl") as writer:
+    df_blocchi.to_csv("output/blocco_completo.csv", index=False, encoding="utf-8-sig")
+    with pd.ExcelWriter("output/blocchi_multi_foglio.xlsx", engine="openpyxl") as writer:
         for blocco, df_b in df_blocchi.groupby("Blocco"):
             df_b.to_excel(writer, sheet_name=f"Blocco_{blocco}", index=False)
 
