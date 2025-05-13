@@ -7,10 +7,12 @@ import os
 import pandas as pd
 from ui import interfaccia, interfaccia_pdf
 
-sezione = st.sidebar.selectbox("Seleziona una sezione", [
-    "Blocchi Visite Aziendali",
-    "Estrazione PDF Appalti"
-])
+sezione = st.sidebar.selectbox(
+    "Seleziona una sezione",
+    ["Blocchi Visite Aziendali", "Estrazione PDF Appalti"],
+    index=0 if st.session_state.get("sezione_attiva") == "Blocchi Visite Aziendali" else 1
+)
+
 
 if sezione == "Blocchi Visite Aziendali":
     csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()

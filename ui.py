@@ -84,13 +84,15 @@ def interfaccia_pdf():
         st.subheader("Filtra file geocodificato e matrice distanze")
         if st.button("Applica filtro agli altri file", key="filtro_finale"):
             from filtra_dataset import filtra_dati
-
+        
             input_csv_geo = "aziende_geocodificate.csv"
             input_matrice_json = "matrice_durate.json"
             output_csv_geo = "aziende_geocodificate_filtrate.csv"
             output_matrice_json = "matrice_durate_filtrata.json"
-
+        
             df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
-            st.success("File geocodificato e matrice filtrati correttamente")
-            st.dataframe(df_geo_filtrato.head())
-            st.download_button("Scarica CSV geocodificato filtrato", data=df_geo_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_csv_geo)
+            st.success("✅ File geocodificato e matrice filtrati correttamente")
+        
+            # 🔁 Salva stato e vai ai blocchi
+            st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
+            st.experimental_rerun()
