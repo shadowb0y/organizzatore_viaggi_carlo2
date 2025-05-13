@@ -5,3 +5,4 @@ openpyxl
 tqdm
 networkx
 urllib3
+PyMuPDF
