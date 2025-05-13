@@ -12,20 +12,20 @@ csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()
 
 if st.button("Genera blocchi"):
     if not os.path.exists(csv_path) or not os.path.exists(json_path):
-        st.error("\u26a0\ufe0f Verifica che i file esistano nei percorsi indicati.")
+        st.error("Verifica che i file esistano nei percorsi indicati.")
     else:
         df_blocchi = genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo)
         df_blocchi = completa_blocchi(df_blocchi, csv_path)
         html_path = genera_mappa(df_blocchi, csv_path)
 
-        st.success("\u2705 Tutti i file generati con successo")
+        st.success("Tutti i file generati con successo")
         st.dataframe(df_blocchi)
 
-        st.download_button("\ud83d\udcc5 Scarica CSV completo", data=df_blocchi.to_csv(index=False).encode('utf-8-sig'), file_name="blocco_completo.csv", mime="text/csv")
+        st.download_button("Scarica CSV completo", data=df_blocchi.to_csv(index=False).encode('utf-8-sig'), file_name="blocco_completo.csv", mime="text/csv")
         with open("blocchi_multi_foglio.xlsx", "rb") as f:
-            st.download_button("\ud83d\udcc5 Scarica Excel multi-foglio", f, file_name="blocchi_multi_foglio.xlsx")
+            st.download_button(" Scarica Excel multi-foglio", f, file_name="blocchi_multi_foglio.xlsx")
         with open(html_path, "rb") as f:
-            st.download_button("\ud83d\udcc5 Scarica mappa HTML", f, file_name="mappa_blocchi_senza_ritorno.html")
+            st.download_button("Scarica mappa HTML", f, file_name="mappa_blocchi_senza_ritorno.html")
 
 
 

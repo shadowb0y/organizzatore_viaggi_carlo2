@@ -81,5 +81,5 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
     df_blocchi = pd.DataFrame(output_rows)
     df_blocchi.to_csv("blocchi_senza_ritorno.csv", index=False, encoding="utf-8-sig")
     progress_bar.empty()
-    status_text.text("\u2705 Calcolo completato")
+    status_text.text("Calcolo completato")
     return df_blocchi
