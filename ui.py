@@ -1,13 +1,10 @@
 
-# === ui.py (aggiunta memoria imprese escluse) ===
+# === ui.py (esteso con filtro imprese e filtro file finali) ===
 import streamlit as st
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import os
 import pandas as pd
 import re
-import json
-
-ELIMINATI_FILE = "imprese_escluse.json"
 
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
@@ -39,7 +36,7 @@ def interfaccia_pdf():
 
         df_filtrato.to_csv(output_path, index=False, encoding="utf-8-sig")
 
-        st.success("Estrazione completata")
+        st.success("✅ Estrazione completata")
         st.dataframe(df_filtrato)
         st.download_button("Scarica CSV filtrato", data=df_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
@@ -55,14 +52,7 @@ def interfaccia_pdf():
                         tutte_imprese.add(nome)
             tutte_imprese = sorted(tutte_imprese)
 
-            # Carica escluse precedenti
-            escluse_storiche = []
-            if os.path.exists(ELIMINATI_FILE):
-                with open(ELIMINATI_FILE, "r", encoding="utf-8") as f:
-                    escluse_storiche = json.load(f)
-
-            selezionate = st.multiselect("Seleziona le imprese da escludere:", tutte_imprese, default=escluse_storiche)
-
+            selezionate = st.multiselect("Seleziona le imprese da escludere:", tutte_imprese)
             if st.button("Rimuovi imprese selezionate", key="filtro_imprese"):
                 def contiene_selezionata(val):
                     if pd.isna(val): return False
@@ -72,10 +62,7 @@ def interfaccia_pdf():
                 df_filtrato_finale = df_loaded.loc[~mask_da_rimuovere].copy()
                 df_filtrato_finale.to_csv(output_path, index=False, encoding="utf-8-sig")
 
-                with open(ELIMINATI_FILE, "w", encoding="utf-8") as f:
-                    json.dump(selezionate, f, ensure_ascii=False, indent=2)
-
-                st.success("Righe contenenti imprese selezionate eliminate con successo (e memorizzate)")
+                st.success("✅ Righe contenenti imprese selezionate eliminate con successo")
                 st.dataframe(df_filtrato_finale)
                 st.download_button("Scarica CSV aggiornato", data=df_filtrato_finale.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
@@ -89,6 +76,6 @@ def interfaccia_pdf():
             output_matrice_json = "matrice_durate_filtrata.json"
 
             df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
-            st.success("File geocodificato e matrice filtrati correttamente")
+            st.success("✅ File geocodificato e matrice filtrati correttamente")
             st.dataframe(df_geo_filtrato.head())
             st.download_button("Scarica CSV geocodificato filtrato", data=df_geo_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_csv_geo)
