@@ -7,6 +7,9 @@ import os
 import pandas as pd
 from ui import interfaccia, interfaccia_pdf
 
+import os
+os.makedirs("output", exist_ok=True)
+
 # === PULIZIA FILE FILTRATI ALL'AVVIO ===
 FILES_TEMPORANEI = [
     "output/aziende_filtrate_correttamente.csv",

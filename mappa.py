@@ -5,6 +5,9 @@ import folium
 from folium.plugins import MarkerCluster
 import random
 
+import os
+os.makedirs("output", exist_ok=True)
+
 def genera_mappa(df_blocchi, csv_path):
     df_geo = pd.read_csv(csv_path, dtype={"ID Progetto": str})
     df_blocchi = df_blocchi.merge(df_geo[["ID Progetto", "Latitudine", "Longitudine"]], on="ID Progetto", how="left")

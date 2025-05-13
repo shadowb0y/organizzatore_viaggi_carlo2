@@ -7,6 +7,9 @@ import re
 from datetime import datetime
 import os
 
+import os
+os.makedirs("output", exist_ok=True)
+
 def rimuovi_date(testo):
     pattern_date = r'\b\d{1,2}/\d{1,2}/\d{2,4}\b|\b\d{4}/\d{1,2}\b|\b\d{1,2}/\d{4}\b|\b\d{4}\b'
     return "; ".join([imp for imp in testo.split(";") if not re.search(pattern_date, imp)])

@@ -2,6 +2,9 @@
 # === completamento.py ===
 import pandas as pd
 import urllib.parse
+import os
+os.makedirs("output", exist_ok=True)
+
 
 def completa_blocchi(df_blocchi, csv_path):
     df_geo = pd.read_csv(csv_path, dtype={"ID Progetto": str})

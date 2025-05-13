@@ -2,10 +2,12 @@
 # === ui.py (aggiunta memoria imprese escluse) ===
 import streamlit as st
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
-import os
 import pandas as pd
 import re
 import json
+
+import os
+os.makedirs("output", exist_ok=True)
 
 ELIMINATI_FILE = "imprese_escluse.json"
 

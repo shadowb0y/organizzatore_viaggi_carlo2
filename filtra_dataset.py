@@ -2,6 +2,9 @@
 import pandas as pd
 import json
 
+import os
+os.makedirs("output", exist_ok=True)
+
 def filtra_dati(input_csv_filtrato, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json):
     # === CARICA CSV CON ID FILTRATI ===
     df_filtrato = pd.read_csv(input_csv_filtrato, dtype=str)

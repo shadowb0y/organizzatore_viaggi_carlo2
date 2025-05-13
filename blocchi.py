@@ -5,6 +5,8 @@ import json
 import streamlit as st
 import networkx as nx
 from networkx.algorithms.approximation import traveling_salesman_problem, greedy_tsp
+import os
+os.makedirs("output", exist_ok=True)
 
 def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
     progress_bar = st.progress(0)
