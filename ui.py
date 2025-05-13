@@ -9,13 +9,47 @@ import json
 
 ELIMINATI_FILE = "imprese_escluse.json"
 
+# def interfaccia():
+#     st.title("Costruttore di blocchi visite aziendali")
+
+#     # Percorsi fissi ai file filtrati
+#     csv_path = "aziende_geocodificate_filtrate.csv"
+#     json_path = "matrice_durate_filtrata.json"
+
+#     if not os.path.exists(csv_path) or not os.path.exists(json_path):
+#         st.warning("⚠️ Prima di generare i blocchi, completa la sezione 'Estrazione PDF Appalti' per filtrare i dati.")
+#         return None, None, None, None
+
+#     tempo_visita = st.number_input("Tempo visita per azienda (secondi)", value=DEFAULT_TEMPO_VISITA)
+#     tempo_massimo = st.number_input("Tempo massimo per blocco (secondi)", value=DEFAULT_TEMPO_MASSIMO)
+
+#     return csv_path, json_path, tempo_visita, tempo_massimo
+
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
-    csv_path = st.text_input("Percorso del file aziende_geocodificate.csv")
-    json_path = st.text_input("Percorso del file matrice_durate.json")
-    tempo_visita = st.number_input("Tempo visita per azienda (secondi)", value=DEFAULT_TEMPO_VISITA)
-    tempo_massimo = st.number_input("Tempo massimo per blocco (secondi)", value=DEFAULT_TEMPO_MASSIMO)
+
+    csv_path = "aziende_geocodificate_filtrate.csv"
+    json_path = "matrice_durate_filtrata.json"
+
+    if not os.path.exists(csv_path) or not os.path.exists(json_path):
+        st.warning("⚠️ Prima di generare i blocchi, completa la sezione 'Estrazione PDF Appalti' per filtrare i dati.")
+        return None, None, None, None
+
+    # === Tempo visita in minuti ===
+    tempo_visita_min = st.number_input("Tempo visita per azienda (minuti)", min_value=1, value=DEFAULT_TEMPO_VISITA // 60)
+    tempo_visita = tempo_visita_min * 60
+
+    # === Tempo massimo in ore e minuti ===
+    col1, col2 = st.columns(2)
+    with col1:
+        ore = st.number_input("Durata massima blocco (ore)", min_value=0, value=DEFAULT_TEMPO_MASSIMO // 3600)
+    with col2:
+        minuti = st.number_input("Durata massima blocco (minuti)", min_value=0, value=(DEFAULT_TEMPO_MASSIMO % 3600) // 60)
+
+    tempo_massimo = ore * 3600 + minuti * 60
+
     return csv_path, json_path, tempo_visita, tempo_massimo
+
 
 def interfaccia_pdf():
     st.header("Estrazione dati da PDF di appalti")
