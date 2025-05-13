@@ -9,27 +9,11 @@ import json
 
 ELIMINATI_FILE = "imprese_escluse.json"
 
-# def interfaccia():
-#     st.title("Costruttore di blocchi visite aziendali")
-
-#     # Percorsi fissi ai file filtrati
-#     csv_path = "aziende_geocodificate_filtrate.csv"
-#     json_path = "matrice_durate_filtrata.json"
-
-#     if not os.path.exists(csv_path) or not os.path.exists(json_path):
-#         st.warning("⚠️ Prima di generare i blocchi, completa la sezione 'Estrazione PDF Appalti' per filtrare i dati.")
-#         return None, None, None, None
-
-#     tempo_visita = st.number_input("Tempo visita per azienda (secondi)", value=DEFAULT_TEMPO_VISITA)
-#     tempo_massimo = st.number_input("Tempo massimo per blocco (secondi)", value=DEFAULT_TEMPO_MASSIMO)
-
-#     return csv_path, json_path, tempo_visita, tempo_massimo
-
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
 
-    csv_path = "aziende_geocodificate_filtrate.csv"
-    json_path = "matrice_durate_filtrata.json"
+    csv_path = "output/aziende_geocodificate_filtrate.csv"
+    json_path = "output/matrice_durate_filtrata.json"
 
     if not os.path.exists(csv_path) or not os.path.exists(json_path):
         st.warning("⚠️ Prima di generare i blocchi, completa la sezione 'Estrazione PDF Appalti' per filtrare i dati.")
@@ -63,7 +47,7 @@ def interfaccia_pdf():
     filtro_data = st.checkbox("Escludi progetti con fine lavori prima di Febbraio 2025", value=True)
     filtro_impresa_generica = st.checkbox("Rimuovi righe senza nome impresa o con dicitura 'assegnato'", value=True)
 
-    output_path = "aziende_filtrate_correttamente.csv"
+    output_path = "output/aziende_filtrate_correttamente.csv"
 
     if st.button("Estrai e filtra dati", key="estrai_pdf"):
         from estrattore import estrai_dati_da_pdf, pulisci_unifica_filtra
@@ -119,10 +103,10 @@ def interfaccia_pdf():
         if st.button("Applica filtro agli altri file", key="filtro_finale"):
             from filtra_dataset import filtra_dati
 
-            input_csv_geo = "aziende_geocodificate.csv"
-            input_matrice_json = "matrice_durate.json"
-            output_csv_geo = "aziende_geocodificate_filtrate.csv"
-            output_matrice_json = "matrice_durate_filtrata.json"
+            input_csv_geo = "data/aziende_geocodificate.csv"
+            input_matrice_json = "data/matrice_durate.json"
+            output_csv_geo = "output/aziende_geocodificate_filtrate.csv"
+            output_matrice_json = "output/matrice_durate_filtrata.json"
 
             df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
             st.success("✅ File geocodificato e matrice filtrati correttamente")

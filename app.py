@@ -9,13 +9,13 @@ from ui import interfaccia, interfaccia_pdf
 
 # === PULIZIA FILE FILTRATI ALL'AVVIO ===
 FILES_TEMPORANEI = [
-    "aziende_filtrate_correttamente.csv",
-    "aziende_geocodificate_filtrate.csv",
-    "matrice_durate_filtrata.json",
-    "blocchi_senza_ritorno.csv",
-    "blocco_completo.csv",
-    "blocchi_multi_foglio.xlsx",
-    "mappa_blocchi_senza_ritorno.html"
+    "output/aziende_filtrate_correttamente.csv",
+    "output/aziende_geocodificate_filtrate.csv",
+    "output/matrice_durate_filtrata.json",
+    "output/blocchi_senza_ritorno.csv",
+    "output/blocco_completo.csv",
+    "output/blocchi_multi_foglio.xlsx",
+    "output/mappa_blocchi_senza_ritorno.html"
 ]
 
 if not st.session_state.get("gia_pulito", False):
@@ -44,11 +44,11 @@ if sezione == "Blocchi Visite Aziendali":
 
             st.success("✅ Tutti i file generati con successo")
            
-            with open("blocchi_multi_foglio.xlsx", "rb") as f:
-                st.download_button("Scarica Excel multi-foglio", f, file_name="blocchi_multi_foglio.xlsx")
+            with open("output/blocchi_multi_foglio.xlsx", "rb") as f:
+                st.download_button("Scarica Excel multi-foglio", f, file_name="output/blocchi_multi_foglio.xlsx")
 
             with open(html_path, "rb") as f:
-                st.download_button("Scarica mappa HTML", f, file_name="mappa_blocchi_senza_ritorno.html")
+                st.download_button("Scarica mappa HTML", f, file_name="output/mappa_blocchi_senza_ritorno.html")
 
 elif sezione == "Estrazione PDF Appalti":
     interfaccia_pdf()
