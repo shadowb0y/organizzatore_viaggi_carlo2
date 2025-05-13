@@ -66,8 +66,8 @@
 1,65,509281,Via Manzoni   35020 Albignasego ( PD ),Aquarius Immobiliare srl,116489
 1,66,527815,Via Milano  35020 Albignasego ( PD ),Immobiliare Barison Srl,117937
 1,67,529055,Via Torino  35020 Albignasego ( PD ),CPR srl + LG Costruzioni srl,119254
-1,68,534138,Via M. Callas  35020 Albignasego ( PD ),Immobiliare San Bonaventura srl; assegnato,120702
-1,69,534139,Via Callas  35020 Albignasego ( PD ),Edilbaraldo srl,121902
+1,68,534139,Via Callas  35020 Albignasego ( PD ),Edilbaraldo srl,120702
+1,69,534138,Via M. Callas  35020 Albignasego ( PD ),Immobiliare San Bonaventura srl; assegnato,121902
 1,70,511389,Via Risorgimento  35020 Albignasego ( PD ),New Costruzioni srl,123192
 1,71,525279,Via E. A. Mario ang. Via San Giorgio  35020 Albignasego ( PD ),BME immobiliare srl; assegnato,124686
 1,72,480474,Via Pizzamano 34  35127 Padova ( PD ),IPS Srl,126571
@@ -183,106 +183,106 @@
 2,37,536086,Via Antica Milizia  48121 Ravenna ( RA ),Gruppo Ritmo srl + Gruppo Ritmo srl; assegnato,67158
 2,38,528228,via Cartesio  48121 Ravenna ( RA ),Snoopy Casa s.coop.rl; assegnato,68590
 2,39,535928,Via Suzzi  48124 Ravenna ( RA ),CMCF Soc. Coop. Muratori Cementisti Faenza,70067
-2,40,537153,Via delle Americhe  48122 Ravenna ( RA ),Gruppo Ritmo srl,72138
-2,41,542609,V.le delle Americhe  48122 Ravenna ( RA ),Gruppo Ritmo srl,73338
+2,40,542609,V.le delle Americhe  48122 Ravenna ( RA ),Gruppo Ritmo srl,72138
+2,41,537153,Via delle Americhe  48122 Ravenna ( RA ),Gruppo Ritmo srl,73338
 2,42,495495,V.le Amerigo Vespucci  48125 Ravenna ( RA ),Galileo srl,75978
 2,43,536083,Via Solarolo snc  48125 Ravenna ( RA ),Gruppo Ritmo srl,77327
 2,44,536084,Via Lord Byron snc  48125 Ravenna ( RA ),Gruppo Ritmo srl,78646
 2,45,512649,Loc. Milano Marittima  48015 Cervia ( RA ),Gruppo Ritmo srl,80379
 2,46,518880,Via Saffi 110/A  47042 Cesenatico ( FC ),Ambroedil di Ambrosio Antonio; B Impianti Elettrici srls; Consorzio CAIEC soc coop arl; assegnato,82481
-2,47,532124,Via Savio snc  47814 Bellaria-Igea Marina ( RN ),Pompili Daniele,84050
-2,48,539779,Via Ravenna ang. Via Savio   47814 Bellaria-Igea Marina ( RN ),Moma srl,85250
-2,49,534750,Via Balbi 10  47814 Bellaria-Igea Marina ( RN ),Ab Carpentier srl,86649
-2,50,518049,Via Caduti per la libertà 16  47814 Bellaria-Igea Marina ( RN ),Tosi Immobiliare,88092
-2,51,534558,Via G. Garibaldi snc  47814 Bellaria-Igea Marina ( RN ),Due Laghi srl,89721
-2,52,532428,Via Foglino snc   47922 Rimini ( RN ),Nuova Vittoria Soc. Coop.; assegnato,91221
-2,53,540100,Via Pasquale Tosi  47822 Santarcangelo di Romagna ( RN ),Bolognesi Vittorio & C. sas; assegnato,92899
-2,54,490196,Via Europa  47822 Santarcangelo di Romagna ( RN ),FLP Costruzioni srl,94347
-2,55,497418,Via Celletta dell'Olio  47822 Santarcangelo di Romagna ( RN ),Dolci Ezio,95714
-2,56,502674,Via Celletta dell’Olio 649  47822 Santarcangelo di Romagna ( RN ),EnCam Srl,96935
-2,57,532474,Via Ugo La Malfa  47822 Santarcangelo di Romagna ( RN ),Immobiliare Borgo Spina srl,98308
-2,58,455789,Via Costa 106  47822 Santarcangelo di Romagna ( RN ),Zanon Prefabbricati,99823
-2,59,523110,via Del Sole  47030 San Mauro Pascoli ( FC ),Le Case di Foschi,101632
-2,60,515185,P.zza Togliatti  47035 Gambettola ( FC ),Impresa Edile Medri Renzo & C. snc,103593
-2,61,535601,via Loreto  47521 Cesena ( FC ),Impresa Edile Medri Renzo & C. snc,104968
-2,62,533810,via Verdi  47035 Gambettola ( FC ),Gruppo Ritmo srl,106452
-2,63,533811,Via Emilia Ponente snc  47522 Cesena ( FC ),CRCS Cooperativa Restauri Costruzioni e Servizi; assegnato,108550
-2,64,540191,Via Santa Croce  47032 Bertinoro ( FC ),Antonelli Edilizia srl; assegnato,110094
-2,65,522326,Via della Repubblica  47034 Forlimpopoli ( FC ),Gazzoni srl,111695
-2,66,481673,Via Brando Brandi  47121 Forlì ( FC ),Olivucci Enea Srl,113681
-2,67,510751,Via Ca' Rossa  47121 Forlì ( FC ),Valbonetti Costruzioni srl,115243
-2,68,505048,Via Autoparco  47122 Forlì ( FC ),CSC Costruzioni srl; Capogruppo ATI; Minicucci Cairo Srl,117010
-2,69,532425,Via Maroncelli 40  47121 Forlì ( FC ),Immobiliare Maroncelli srl; assegnato,118626
-2,70,512017,Via Cornacchia  48018 Faenza ( RA ),Immobiliare Due Fonti srl,121480
-2,71,496560,Via Tisi 4  44011 Argenta ( FE ),Cires Società Cooperativa; Consorzio Integra Società Cooperativa; Seep Bo srl,125844
-2,72,496930,Via Vittorio Emanuele II 20/ a-b  44027 Fiscaglia ( FE ),GC Appalti srl; assegnato; integrato,129167
-2,73,479028,Via P. Togliatti  40050 Monte San Pietro ( BO ),Ter Costruzioni srl,129167
-2,74,528313,Loc. Savigno  40053 Valsamoggia ( BO ),Sogei srl,131484
-2,75,507710,Via Ca' Bianca  41057 Spilamberto ( MO ),Costruire Bio,134496
-2,76,538456,via Papa Giovanni Paolo II  41018 San Cesario sul Panaro ( MO ),Bibiemme Srls; assegnato + RT Costruzioni; assegnato,136320
-2,77,542770,Via Papa Giovanni Paolo II   41018 San Cesario sul Panaro ( MO ),Ghirlandina Buildings srl; assegnato,137520
-2,78,490161,Via Zanasi 60  41013 Castelfranco Emilia ( MO ),Capogruppo ATI; Mei Tecnologie e Costruzioni srl,139185
-2,79,517297,Via Mavora  40019 Sant'Agata Bolognese ( BO ),Scandia Costruzioni srl,141237
-2,80,539940,Loc. Mavora  40019 Sant'Agata Bolognese ( BO ),Scandia Costruzioni srl; assegnato,142437
-2,81,495903,Via Saragat  40019 Sant'Agata Bolognese ( BO ),Edilcraft srl,143832
-2,82,539164,Via del Papa  40014 Crevalcore ( BO ),Impresa Edile Monfredini di Monfredini Geom. Carlo; assegnato,145700
-2,83,535656,via Neri  41032 Cavezzo ( MO ),Edili Benatti snc; assegnato,148221
-2,84,490467,Via Grandi 195  41019 Soliera ( MO ),ArCo Lavori s.coop.consortile; VF Costruzioni e Restauri srl,150524
-2,85,532203,Via Molinari 33  41012 Carpi ( MO ),La Concordia Costruzioni srl; assegnato,152622
-2,86,494465,Via Mar Nero  41012 Carpi ( MO ),Garc SpA; assegnato,154304
-2,87,538460,Via Cavour 51  42017 Novellara ( RE ),DM Costruzioni srl; assegnato,156713
-2,88,522788,Via Boiardi - Via V. Emanuele II  42048 Rubiera ( RE ),Samoter del geom.Munno Antonio; aggiudicato all'impresa segnalata che ha; assegnato,159109
-2,89,526283,Via Marmirolo 24  42019 Scandiano ( RE ),ICOED srl Unipersonale; aggiudicato all'impresa segnalata che ha; assegnato,160867
-2,90,534235,V.le della Repubblica   42019 Scandiano ( RE ),Cooperativa Edilizia San Martino; Poldo srl,162544
-2,91,526171,Via Ariosto  42020 Albinea ( RE ),Andria s.coop.rl,164228
-2,92,530136,Via Giulio Mattioli  42020 Albinea ( RE ),F&F Costruzioni Generali,165503
-2,93,529755,Via Vittorio Emanuele II  42020 Albinea ( RE ),Edilbelli srl,167151
-2,94,509232,Via Dalmazia 85  42124 Reggio nell'Emilia ( RE ),R.Z. srl; assegnato,169267
-2,95,529681,Via Maria Montessori  42049 Sant'Ilario d'Enza ( RE ),FraLuRo Costruzioni Generali Srl,171867
-2,96,541345,Strada Budellungo   43123 Parma ( PR ),DB Consulting srl; assegnato,173798
-2,97,541348,Via Erberto Carboni  43123 Parma ( PR ),La Torre srl,175101
-2,98,502432,Via Budellungo Est  43123 Parma ( PR ),Immobiliare Farnese srl,176475
-2,99,541337,Via Budellungo Est   43123 Parma ( PR ),DB Consulting srl; assegnato,177675
-2,100,524246,Via Malaspina 38  43123 Parma ( PR ),Impresa ing.Marchesini srl,179104
-2,101,520085,via Cassio Parmense  43123 Parma ( PR ),Impresa ing.Marchesini srl,180370
-2,102,498898,Via del Garda 8  43123 Parma ( PR ),Cams Servizi Edili srl; Capogruppo ATI,181884
-2,103,538869,via Emilia Ovest  43126 Parma ( PR ),Fa 10 Srl; assegnato,183567
-2,104,530550,Via Caduti di Nassrya  43126 Parma ( PR ),Bucci SpA,185075
-2,105,498895,Via B.go San Giuseppe 32  43125 Parma ( PR ),Cams Servizi Edili srl; Capogruppo ATI; F.lli B System Srl,186694
-2,106,502430,Str. del Lazzaretto  43123 Parma ( PR ),Buozzi & C. Costruzioni srl,188626
-2,107,534381,Via Basse - Monticelli terme  43022 Montechiarugolo ( PR ),Sercal Costruzioni srl,190268
-2,108,542719,Via Andrea Borri   43022 Montechiarugolo ( PR ),Arcadue Immobiliare srl; assegnato,191660
-2,109,533261,Via Schianchi  43022 Montechiarugolo ( PR ),Nous costruzioni srl,193039
-2,110,519418,via ettore e ugo gennari  43124 Parma ( PR ),Costruzioni Ferrari Sgavetti srl,195334
-2,111,532132,Via Piccoli  43038 Sala Baganza ( PR ),Immobiliare Malatesta srl + Immobiliare Malatesta srl; assegnato,197521
-2,112,476035,Loc. Castelguelfo  43010 Fontevivo ( PR ),Scaramuzza Fabrizio srl,199832
-2,113,499256,via Mirti  43015 Noceto ( PR ),Classe A srl,201167
-2,114,541249,Via Formica (ex c.d.1)   43015 Noceto ( PR ),Rgm New srl,202888
-2,115,539690,S.P. Coduro 11Q  43036 Fidenza ( PR ),Immobiliare Irene srls; assegnato,204739
-2,116,535650,via Ponte Nuovo  43036 Fidenza ( PR ),Edilfidenza Due Coop.s.coop.a rl; assegnato,206134
-2,117,532610,Via Trieste 5-7  43036 Fidenza ( PR ),CAMAR Società Cooperativa; F.lli B System Srl; assegnato; integrato,207634
-2,118,496599,Via R. Livatino 2  43039 Salsomaggiore Terme ( PR ),Renato Monica srl; integrato,209467
-2,119,524785,Via Ricostruzione  29014 Castell'Arquato ( PC ),Quattoli Giacomo Costruzioni Edili srl,212142
-2,120,531960,Via Romeo Magnaschi   29013 Carpaneto Piacentino ( PC ),Rossi e Signaroldi Costruzioni srl,214272
-2,121,531347,Via De Andrè  29010 Pontenure ( PC ),Camia Costruzioni srl,216252
-2,122,541938,Via Mazzoni   29027 Podenzano ( PC ),BSB Edilizia snc di Bonfanti Enrico & C.; assegnato,218132
-2,123,479436,PEEP Q.re Farnesiana  29122 Piacenza ( PC ),BeGen Infrastrutture srl,220124
-2,124,530260,Via Matteotti 38/40  29020 Gossolengo ( PC ),Man Buildings Srl,221954
-2,125,517989,Via del Pereto  29029 Rivergaro ( PC ),Tibulli Costruzioni srl,223941
-2,126,500595,Via Card.Maculani  29100 Piacenza ( PC ),Housingest Network Srl,226703
-2,127,528205,Via Melchiorre Gioia 1/b  29015 Castel San Giovanni ( PC ),Enenso srl,229274
-2,128,531655,Via Alighieri  29011 Borgonovo Val Tidone ( PC ),Innovaty Immobiliare srl; assegnato + Project House srl; assegnato,230952
-2,129,513031,Via Prati    29011 Borgonovo Val Tidone ( PC ),Edilvaltidone srl,232294
-2,130,532606,Via Mario Zaniboni  43011 Busseto ( PR ),Alpha Costruzioni; assegnato,236764
-2,131,522495,Str. Varana snc   43017 San Secondo Parmense ( PR ),Unicrea srls; assegnato,239257
-2,132,539786,Strada Varana  43017 San Secondo Parmense ( PR ),BDM Costruzioni di Daracchi srl,240457
-2,133,528103,via Don Orsi  43013 Langhirano ( PR ),Chiastra & Pattera Costruzioni srl,244383
-2,134,522928,Via Aldo Fochi  43013 Langhirano ( PR ),Chiastra & Pattera Costruzioni srl,245652
-2,135,522784,Via S.Matteo 55  42020 San Polo d'Enza ( RE ),Edil F.lli Leto snc,248388
-2,136,533556,Via Toscanini  42013 Casalgrande ( RE ),Immobiliare Poggio 70 srl; assegnato,252010
-2,137,533809,circonvallazione nord-est snc  41049 Sassuolo ( MO ),Fondamenta Srl; assegnato,253653
-2,138,535755,Via Silvio Pellico 6  41042 Fiorano Modenese ( MO ),Edifica srl,255179
-2,139,539049,Via Del Commercio 19  41042 Fiorano Modenese ( MO ),ICOED srl Unipersonale; aggiudicato; assegnato,256631
+2,47,539779,Via Ravenna ang. Via Savio   47814 Bellaria-Igea Marina ( RN ),Moma srl,84050
+2,48,532124,Via Savio snc  47814 Bellaria-Igea Marina ( RN ),Pompili Daniele,85250
+2,49,534750,Via Balbi 10  47814 Bellaria-Igea Marina ( RN ),Ab Carpentier srl,86688
+2,50,518049,Via Caduti per la libertà 16  47814 Bellaria-Igea Marina ( RN ),Tosi Immobiliare,88131
+2,51,534558,Via G. Garibaldi snc  47814 Bellaria-Igea Marina ( RN ),Due Laghi srl,89760
+2,52,532428,Via Foglino snc   47922 Rimini ( RN ),Nuova Vittoria Soc. Coop.; assegnato,91260
+2,53,540100,Via Pasquale Tosi  47822 Santarcangelo di Romagna ( RN ),Bolognesi Vittorio & C. sas; assegnato,92938
+2,54,490196,Via Europa  47822 Santarcangelo di Romagna ( RN ),FLP Costruzioni srl,94386
+2,55,497418,Via Celletta dell'Olio  47822 Santarcangelo di Romagna ( RN ),Dolci Ezio,95753
+2,56,502674,Via Celletta dell’Olio 649  47822 Santarcangelo di Romagna ( RN ),EnCam Srl,96974
+2,57,532474,Via Ugo La Malfa  47822 Santarcangelo di Romagna ( RN ),Immobiliare Borgo Spina srl,98347
+2,58,455789,Via Costa 106  47822 Santarcangelo di Romagna ( RN ),Zanon Prefabbricati,99862
+2,59,523110,via Del Sole  47030 San Mauro Pascoli ( FC ),Le Case di Foschi,101671
+2,60,515185,P.zza Togliatti  47035 Gambettola ( FC ),Impresa Edile Medri Renzo & C. snc,103632
+2,61,535601,via Loreto  47521 Cesena ( FC ),Impresa Edile Medri Renzo & C. snc,105007
+2,62,533810,via Verdi  47035 Gambettola ( FC ),Gruppo Ritmo srl,106491
+2,63,533811,Via Emilia Ponente snc  47522 Cesena ( FC ),CRCS Cooperativa Restauri Costruzioni e Servizi; assegnato,108589
+2,64,540191,Via Santa Croce  47032 Bertinoro ( FC ),Antonelli Edilizia srl; assegnato,110133
+2,65,522326,Via della Repubblica  47034 Forlimpopoli ( FC ),Gazzoni srl,111734
+2,66,481673,Via Brando Brandi  47121 Forlì ( FC ),Olivucci Enea Srl,113720
+2,67,510751,Via Ca' Rossa  47121 Forlì ( FC ),Valbonetti Costruzioni srl,115282
+2,68,505048,Via Autoparco  47122 Forlì ( FC ),CSC Costruzioni srl; Capogruppo ATI; Minicucci Cairo Srl,117049
+2,69,532425,Via Maroncelli 40  47121 Forlì ( FC ),Immobiliare Maroncelli srl; assegnato,118665
+2,70,512017,Via Cornacchia  48018 Faenza ( RA ),Immobiliare Due Fonti srl,121519
+2,71,496560,Via Tisi 4  44011 Argenta ( FE ),Cires Società Cooperativa; Consorzio Integra Società Cooperativa; Seep Bo srl,125883
+2,72,496930,Via Vittorio Emanuele II 20/ a-b  44027 Fiscaglia ( FE ),GC Appalti srl; assegnato; integrato,129206
+2,73,479028,Via P. Togliatti  40050 Monte San Pietro ( BO ),Ter Costruzioni srl,129206
+2,74,528313,Loc. Savigno  40053 Valsamoggia ( BO ),Sogei srl,131523
+2,75,507710,Via Ca' Bianca  41057 Spilamberto ( MO ),Costruire Bio,134535
+2,76,538456,via Papa Giovanni Paolo II  41018 San Cesario sul Panaro ( MO ),Bibiemme Srls; assegnato + RT Costruzioni; assegnato,136359
+2,77,542770,Via Papa Giovanni Paolo II   41018 San Cesario sul Panaro ( MO ),Ghirlandina Buildings srl; assegnato,137559
+2,78,490161,Via Zanasi 60  41013 Castelfranco Emilia ( MO ),Capogruppo ATI; Mei Tecnologie e Costruzioni srl,139224
+2,79,517297,Via Mavora  40019 Sant'Agata Bolognese ( BO ),Scandia Costruzioni srl,141276
+2,80,539940,Loc. Mavora  40019 Sant'Agata Bolognese ( BO ),Scandia Costruzioni srl; assegnato,142476
+2,81,495903,Via Saragat  40019 Sant'Agata Bolognese ( BO ),Edilcraft srl,143871
+2,82,539164,Via del Papa  40014 Crevalcore ( BO ),Impresa Edile Monfredini di Monfredini Geom. Carlo; assegnato,145739
+2,83,535656,via Neri  41032 Cavezzo ( MO ),Edili Benatti snc; assegnato,148260
+2,84,490467,Via Grandi 195  41019 Soliera ( MO ),ArCo Lavori s.coop.consortile; VF Costruzioni e Restauri srl,150563
+2,85,532203,Via Molinari 33  41012 Carpi ( MO ),La Concordia Costruzioni srl; assegnato,152661
+2,86,494465,Via Mar Nero  41012 Carpi ( MO ),Garc SpA; assegnato,154343
+2,87,538460,Via Cavour 51  42017 Novellara ( RE ),DM Costruzioni srl; assegnato,156752
+2,88,522788,Via Boiardi - Via V. Emanuele II  42048 Rubiera ( RE ),Samoter del geom.Munno Antonio; aggiudicato all'impresa segnalata che ha; assegnato,159148
+2,89,526283,Via Marmirolo 24  42019 Scandiano ( RE ),ICOED srl Unipersonale; aggiudicato all'impresa segnalata che ha; assegnato,160906
+2,90,534235,V.le della Repubblica   42019 Scandiano ( RE ),Cooperativa Edilizia San Martino; Poldo srl,162583
+2,91,526171,Via Ariosto  42020 Albinea ( RE ),Andria s.coop.rl,164267
+2,92,530136,Via Giulio Mattioli  42020 Albinea ( RE ),F&F Costruzioni Generali,165542
+2,93,529755,Via Vittorio Emanuele II  42020 Albinea ( RE ),Edilbelli srl,167190
+2,94,509232,Via Dalmazia 85  42124 Reggio nell'Emilia ( RE ),R.Z. srl; assegnato,169306
+2,95,529681,Via Maria Montessori  42049 Sant'Ilario d'Enza ( RE ),FraLuRo Costruzioni Generali Srl,171906
+2,96,541345,Strada Budellungo   43123 Parma ( PR ),DB Consulting srl; assegnato,173837
+2,97,541348,Via Erberto Carboni  43123 Parma ( PR ),La Torre srl,175140
+2,98,502432,Via Budellungo Est  43123 Parma ( PR ),Immobiliare Farnese srl,176514
+2,99,541337,Via Budellungo Est   43123 Parma ( PR ),DB Consulting srl; assegnato,177714
+2,100,524246,Via Malaspina 38  43123 Parma ( PR ),Impresa ing.Marchesini srl,179143
+2,101,520085,via Cassio Parmense  43123 Parma ( PR ),Impresa ing.Marchesini srl,180409
+2,102,498898,Via del Garda 8  43123 Parma ( PR ),Cams Servizi Edili srl; Capogruppo ATI,181923
+2,103,538869,via Emilia Ovest  43126 Parma ( PR ),Fa 10 Srl; assegnato,183606
+2,104,530550,Via Caduti di Nassrya  43126 Parma ( PR ),Bucci SpA,185114
+2,105,498895,Via B.go San Giuseppe 32  43125 Parma ( PR ),Cams Servizi Edili srl; Capogruppo ATI; F.lli B System Srl,186733
+2,106,502430,Str. del Lazzaretto  43123 Parma ( PR ),Buozzi & C. Costruzioni srl,188665
+2,107,534381,Via Basse - Monticelli terme  43022 Montechiarugolo ( PR ),Sercal Costruzioni srl,190307
+2,108,542719,Via Andrea Borri   43022 Montechiarugolo ( PR ),Arcadue Immobiliare srl; assegnato,191699
+2,109,533261,Via Schianchi  43022 Montechiarugolo ( PR ),Nous costruzioni srl,193078
+2,110,519418,via ettore e ugo gennari  43124 Parma ( PR ),Costruzioni Ferrari Sgavetti srl,195373
+2,111,532132,Via Piccoli  43038 Sala Baganza ( PR ),Immobiliare Malatesta srl + Immobiliare Malatesta srl; assegnato,197560
+2,112,476035,Loc. Castelguelfo  43010 Fontevivo ( PR ),Scaramuzza Fabrizio srl,199871
+2,113,499256,via Mirti  43015 Noceto ( PR ),Classe A srl,201206
+2,114,541249,Via Formica (ex c.d.1)   43015 Noceto ( PR ),Rgm New srl,202927
+2,115,539690,S.P. Coduro 11Q  43036 Fidenza ( PR ),Immobiliare Irene srls; assegnato,204778
+2,116,535650,via Ponte Nuovo  43036 Fidenza ( PR ),Edilfidenza Due Coop.s.coop.a rl; assegnato,206173
+2,117,532610,Via Trieste 5-7  43036 Fidenza ( PR ),CAMAR Società Cooperativa; F.lli B System Srl; assegnato; integrato,207673
+2,118,496599,Via R. Livatino 2  43039 Salsomaggiore Terme ( PR ),Renato Monica srl; integrato,209506
+2,119,524785,Via Ricostruzione  29014 Castell'Arquato ( PC ),Quattoli Giacomo Costruzioni Edili srl,212181
+2,120,531960,Via Romeo Magnaschi   29013 Carpaneto Piacentino ( PC ),Rossi e Signaroldi Costruzioni srl,214311
+2,121,531347,Via De Andrè  29010 Pontenure ( PC ),Camia Costruzioni srl,216291
+2,122,541938,Via Mazzoni   29027 Podenzano ( PC ),BSB Edilizia snc di Bonfanti Enrico & C.; assegnato,218171
+2,123,479436,PEEP Q.re Farnesiana  29122 Piacenza ( PC ),BeGen Infrastrutture srl,220163
+2,124,530260,Via Matteotti 38/40  29020 Gossolengo ( PC ),Man Buildings Srl,221993
+2,125,517989,Via del Pereto  29029 Rivergaro ( PC ),Tibulli Costruzioni srl,223980
+2,126,500595,Via Card.Maculani  29100 Piacenza ( PC ),Housingest Network Srl,226742
+2,127,528205,Via Melchiorre Gioia 1/b  29015 Castel San Giovanni ( PC ),Enenso srl,229313
+2,128,531655,Via Alighieri  29011 Borgonovo Val Tidone ( PC ),Innovaty Immobiliare srl; assegnato + Project House srl; assegnato,230991
+2,129,513031,Via Prati    29011 Borgonovo Val Tidone ( PC ),Edilvaltidone srl,232333
+2,130,532606,Via Mario Zaniboni  43011 Busseto ( PR ),Alpha Costruzioni; assegnato,236803
+2,131,522495,Str. Varana snc   43017 San Secondo Parmense ( PR ),Unicrea srls; assegnato,239296
+2,132,539786,Strada Varana  43017 San Secondo Parmense ( PR ),BDM Costruzioni di Daracchi srl,240496
+2,133,528103,via Don Orsi  43013 Langhirano ( PR ),Chiastra & Pattera Costruzioni srl,244422
+2,134,522928,Via Aldo Fochi  43013 Langhirano ( PR ),Chiastra & Pattera Costruzioni srl,245691
+2,135,522784,Via S.Matteo 55  42020 San Polo d'Enza ( RE ),Edil F.lli Leto snc,248427
+2,136,533556,Via Toscanini  42013 Casalgrande ( RE ),Immobiliare Poggio 70 srl; assegnato,252049
+2,137,533809,circonvallazione nord-est snc  41049 Sassuolo ( MO ),Fondamenta Srl; assegnato,253692
+2,138,535755,Via Silvio Pellico 6  41042 Fiorano Modenese ( MO ),Edifica srl,255218
+2,139,539049,Via Del Commercio 19  41042 Fiorano Modenese ( MO ),ICOED srl Unipersonale; aggiudicato; assegnato,256670
 3,1,530206,Via Pertini  41042 Fiorano Modenese ( MO ),Arcadia Immobiliare srl,0
 3,2,536388,Via Virginia Woolf  41053 Maranello ( MO ),Home Immobili srl; assegnato + San Giacomo srl,1504
 3,3,531654,Via Elsa Morante  41053 Maranello ( MO ),Immobiliare Le Querce srl,2865
@@ -474,8 +474,8 @@
 4,53,469121,Via C.L.N.   10095 Grugliasco ( TO ),Cogeor srl; assegnato,84426
 4,54,524048,C.so Francia 343-345-347  10093 Collegno ( TO ),Fiammengo Federico srl; integrato,85883
 4,55,524337,Via Oberdan 10  10093 Collegno ( TO ),VGS Costruzioni; integrato,87475
-4,56,538088,C.so Francia  10093 Collegno ( TO ),DueB Costruzioni srl,88929
-4,57,531877,C.so Francia   10093 Collegno ( TO ),FIBE srl,90129
+4,56,531877,C.so Francia   10093 Collegno ( TO ),FIBE srl,88929
+4,57,538088,C.so Francia  10093 Collegno ( TO ),DueB Costruzioni srl,90129
 4,58,402002,C.so Francia 45  10100 Torino ( TO ),Nuova Siet SpA,91612
 4,59,500677,Via G. Pacchiotti   10094 Giaveno ( TO ),Macchia srl,93338
 4,60,529918,Via Bellardi 29 e C.so Brunelleschi 12-14  10146 Torino ( TO ),La Favorita srl; assegnato,94784
