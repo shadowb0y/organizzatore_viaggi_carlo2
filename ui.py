@@ -1,9 +1,10 @@
 
-# === ui.py (esteso con filtro imprese post-estrazione) ===
+# === ui.py (esteso con filtro imprese e filtro file finali) ===
 import streamlit as st
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import os
 import pandas as pd
+import re
 
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
@@ -39,7 +40,6 @@ def interfaccia_pdf():
         st.dataframe(df_filtrato)
         st.download_button("Scarica CSV filtrato", data=df_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
-    # === RICARICA FILE CSV E FILTRA IMPRESE SELEZIONATE ===
     if os.path.exists(output_path):
         st.subheader("Filtro imprese da rimuovere")
         df_loaded = pd.read_csv(output_path, dtype=str)
@@ -65,3 +65,17 @@ def interfaccia_pdf():
                 st.success("✅ Righe contenenti imprese selezionate eliminate con successo")
                 st.dataframe(df_filtrato_finale)
                 st.download_button("Scarica CSV aggiornato", data=df_filtrato_finale.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
+
+        st.subheader("Filtra file geocodificato e matrice distanze")
+        if st.button("Applica filtro agli altri file", key="filtro_finale"):
+            from filtra_dataset import filtra_dati
+
+            input_csv_geo = "aziende_geocodificate.csv"
+            input_matrice_json = "matrice_durate.json"
+            output_csv_geo = "aziende_geocodificate_filtrate.csv"
+            output_matrice_json = "matrice_durate_filtrata.json"
+
+            df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
+            st.success("✅ File geocodificato e matrice filtrati correttamente")
+            st.dataframe(df_geo_filtrato.head())
+            st.download_button("Scarica CSV geocodificato filtrato", data=df_geo_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_csv_geo)
