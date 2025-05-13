@@ -7,6 +7,24 @@ import os
 import pandas as pd
 from ui import interfaccia, interfaccia_pdf
 
+
+# === PULIZIA FILE FILTRATI ALL'AVVIO ===
+FILES_TEMPORANEI = [
+    "aziende_filtrate_correttamente.csv",
+    "aziende_geocodificate_filtrate.csv",
+    "matrice_durate_filtrata.json"
+]
+
+if not st.session_state.get("gia_pulito", False):
+    for file in FILES_TEMPORANEI:
+        if os.path.exists(file):
+            os.remove(file)
+    st.session_state["gia_pulito"] = True
+
+
+
+
+
 sezione = st.sidebar.selectbox(
     "Seleziona una sezione",
     ["Blocchi Visite Aziendali", "Estrazione PDF Appalti"],
