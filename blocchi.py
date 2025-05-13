@@ -39,7 +39,7 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
 
     for i in range(len(tsp_path)):
         progress_bar.progress(i / len(tsp_path))
-        status_text.text(f"\ud83d\ude97 Elaborazione visita {i + 1} / {len(tsp_path)}")
+        status_text.text(f"Elaborazione visita {i + 1} / {len(tsp_path)}")
 
         current_id = tsp_path[i]
         if not blocco_corrente:
