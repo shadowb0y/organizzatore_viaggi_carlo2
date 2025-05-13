@@ -38,5 +38,5 @@ def genera_mappa(df_blocchi, csv_path):
             fill_opacity=0.9
         ).add_to(marker_cluster)
 
-    mappa.save("mappa_blocchi_senza_ritorno.html")
-    return "mappa_blocchi_senza_ritorno.html"
+    mappa.save("output/mappa_blocchi_senza_ritorno.html")
+    return "output/mappa_blocchi_senza_ritorno.html"
