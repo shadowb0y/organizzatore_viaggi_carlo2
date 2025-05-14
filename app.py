@@ -42,8 +42,6 @@ sezione = st.sidebar.selectbox(
     ],
     index=0
 )
-
-# === BLOCCHI VISITE AZIENDALI ===
 if sezione == "Blocchi Visite Aziendali":
     csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()
 
@@ -53,22 +51,27 @@ if sezione == "Blocchi Visite Aziendali":
             df_blocchi = completa_blocchi(df_blocchi, csv_path)
             html_path = genera_mappa(df_blocchi, csv_path)
 
+            st.session_state["df_blocchi"] = df_blocchi  # 🔁 SALVA in sessione
+
             st.success("✅ Tutti i file generati con successo")
 
-            st.markdown("## 📋 Visualizza blocchi generati:")
-            blocchi_disponibili = df_blocchi["Blocco"].unique().tolist()
-            blocco_scelto = st.selectbox("Seleziona un blocco da visualizzare o scaricare:", blocchi_disponibili)
+    # === VISUALIZZAZIONE BLOCCO SOLO SE ESISTE ===
+    if "df_blocchi" in st.session_state:
+        df_blocchi = st.session_state["df_blocchi"]
 
-            df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto]
-            st.dataframe(df_blocco_singolo, use_container_width=True)
+        st.markdown("## 📋 Visualizza blocchi generati:")
+        blocchi_disponibili = df_blocchi["Blocco"].unique().tolist()
+        blocco_scelto = st.selectbox("Seleziona un blocco da visualizzare o scaricare:", blocchi_disponibili)
 
-            # Pulsante per salvare singolo blocco
-            if st.button("📥 Scarica blocco selezionato"):
-                ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
-                nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
-                path_file = os.path.join("cronologia", nome_file)
-                df_blocco_singolo.to_excel(path_file, index=False)
-                st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
+        df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto]
+        st.dataframe(df_blocco_singolo, use_container_width=True)
+
+        if st.button("📥 Scarica blocco selezionato"):
+            ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
+            nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
+            path_file = os.path.join("cronologia", nome_file)
+            df_blocco_singolo.to_excel(path_file, index=False)
+            st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
 
 # === ESTRAZIONE PDF APPALTI ===
 elif sezione == "Estrazione PDF Appalti":
