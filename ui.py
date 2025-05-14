@@ -90,10 +90,14 @@ def interfaccia_pdf():
 
             with col1:
                 st.markdown("### ❌ Imprese escluse")
-                if "imprese_da_escludere" in st.session_state:
-                    for imp in st.session_state["imprese_da_escludere"]:
-                        st.markdown(f"- {imp}")
-
+                escluse_correnti = st.session_state.get("imprese_da_escludere", [])
+                
+                if escluse_correnti:
+                    df_escluse = pd.DataFrame({"Impresa": escluse_correnti})
+                    st.dataframe(df_escluse, use_container_width=True, hide_index=True)
+                else:
+                    st.info("Nessuna impresa esclusa al momento.")
+            
             with col2:
                 selezionate = st.multiselect("Seleziona le imprese da escludere:", tutte_imprese, default=default_validi)
 
