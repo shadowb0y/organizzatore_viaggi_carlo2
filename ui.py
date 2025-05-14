@@ -1,6 +1,5 @@
 # === ui.py (aggiornato) ===
 import streamlit as st
-st.set_page_config(layout="wide")
 
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import pandas as pd
