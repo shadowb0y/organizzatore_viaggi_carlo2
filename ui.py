@@ -9,12 +9,12 @@ import os
 import datetime
 
 os.makedirs("output", exist_ok=True)
+os.makedirs("cronologia", exist_ok=True)  # nuova cartella per blocchi salvati
 
 # === PATH FILE ===
 VISITATI_FILE = "output/id_gia_visitati.json"
 NOMI_FILE = "data/nomi.csv"
 NOMI_ESCLUSI_FILE = "output/nomi_esclusi.json"
-
 
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
@@ -38,7 +38,6 @@ def interfaccia():
     tempo_massimo = ore * 3600 + minuti * 60
 
     return csv_path, json_path, tempo_visita, tempo_massimo
-
 
 def interfaccia_pdf():
     st.header("Estrazione dati da PDF di appalti")
@@ -88,7 +87,6 @@ def interfaccia_pdf():
         st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
         st.rerun()
 
-
 def interfaccia_id_gia_visitati():
     st.header("📌 ID già visitati")
 
@@ -127,7 +125,6 @@ def interfaccia_id_gia_visitati():
             if not df_id_visitati.empty:
                 st.markdown("### 📄 ID visitati salvati:")
                 st.dataframe(df_id_visitati.sort_values(by="Data", ascending=False), use_container_width=True)
-
 
 def interfaccia_filtro_nomi():
     st.header("🚫 Nomi aziende da filtrare")
@@ -170,3 +167,23 @@ def interfaccia_filtro_nomi():
             if not df_esclusi.empty:
                 st.markdown("### 📄 Nomi esclusi salvati:")
                 st.dataframe(df_esclusi.sort_values(by="Data", ascending=False), use_container_width=True)
+
+
+
+def interfaccia_cronologia():
+    st.title("📂 Cronologia blocchi salvati")
+
+    cartella = "cronologia"
+    files_cronologia = sorted([f for f in os.listdir(cartella) if f.endswith(".xlsx")], reverse=True)
+
+    if not files_cronologia:
+        st.info("Nessun blocco salvato ancora.")
+        return
+
+    for nome_file in files_cronologia:
+        path = os.path.join(cartella, nome_file)
+        st.markdown(f"### 📄 {nome_file}")
+        df = pd.read_excel(path)
+        st.dataframe(df, use_container_width=True)
+        with open(path, "rb") as f:
+            st.download_button("⬇️ Scarica", f, file_name=nome_file, key=nome_file)

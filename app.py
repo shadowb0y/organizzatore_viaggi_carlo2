@@ -1,6 +1,6 @@
 # === app.py ===
 import streamlit as st
-st.set_page_config(layout="wide")  # Deve essere subito dopo l'import
+st.set_page_config(layout="wide")
 
 from blocchi import genera_blocchi
 from completamento import completa_blocchi
@@ -9,10 +9,11 @@ from ui import interfaccia, interfaccia_pdf, interfaccia_id_gia_visitati, interf
 
 import os
 import pandas as pd
+from datetime import datetime
 
 os.makedirs("output", exist_ok=True)
+os.makedirs("cronologia", exist_ok=True)  # ✅ nuova cartella per salvataggi singoli
 
-# === PULIZIA FILE TEMPORANEI ALL'AVVIO ===
 FILES_TEMPORANEI = [
     "output/aziende_filtrate_correttamente.csv",
     "output/aziende_geocodificate_filtrate.csv",
@@ -29,19 +30,20 @@ if not st.session_state.get("gia_pulito", False):
             os.remove(file)
     st.session_state["gia_pulito"] = True
 
-# === INTERFACCIA PRINCIPALE ===
+# === SEZIONI ===
 sezione = st.sidebar.selectbox(
     "Seleziona una sezione",
     [
         "Blocchi Visite Aziendali",
         "Estrazione PDF Appalti",
         "📌 ID già visitati",
-        "🚫 Nomi da filtrare"
+        "🚫 Nomi da filtrare",
+        "📂 Cronologia"
     ],
-    index=0 if st.session_state.get("sezione_attiva") == "Blocchi Visite Aziendali" else 1
+    index=0
 )
 
-# === SEZIONE BLOCCHI VISITE AZIENDALI ===
+# === BLOCCHI VISITE AZIENDALI ===
 if sezione == "Blocchi Visite Aziendali":
     csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()
 
@@ -53,20 +55,46 @@ if sezione == "Blocchi Visite Aziendali":
 
             st.success("✅ Tutti i file generati con successo")
 
-            with open("output/blocchi_multi_foglio.xlsx", "rb") as f:
-                st.download_button("Scarica Excel multi-foglio", f, file_name="output/blocchi_multi_foglio.xlsx")
+            st.markdown("## 📋 Visualizza blocchi generati:")
+            blocchi_disponibili = df_blocchi["Blocco"].unique().tolist()
+            blocco_scelto = st.selectbox("Seleziona un blocco da visualizzare o scaricare:", blocchi_disponibili)
 
-            with open(html_path, "rb") as f:
-                st.download_button("Scarica mappa HTML", f, file_name="output/mappa_blocchi_senza_ritorno.html")
+            df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto]
+            st.dataframe(df_blocco_singolo, use_container_width=True)
 
-# === SEZIONE ESTRAZIONE PDF APPALTI ===
+            # Pulsante per salvare singolo blocco
+            if st.button("📥 Scarica blocco selezionato"):
+                ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
+                nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
+                path_file = os.path.join("cronologia", nome_file)
+                df_blocco_singolo.to_excel(path_file, index=False)
+                st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
+
+# === ESTRAZIONE PDF APPALTI ===
 elif sezione == "Estrazione PDF Appalti":
     interfaccia_pdf()
 
-# === SOTTOSEZIONE: ID GIÀ VISITATI ===
+# === ID GIÀ VISITATI ===
 elif sezione == "📌 ID già visitati":
     interfaccia_id_gia_visitati()
 
-# === SOTTOSEZIONE: NOMI DA FILTRARE ===
+# === NOMI DA FILTRARE ===
 elif sezione == "🚫 Nomi da filtrare":
     interfaccia_filtro_nomi()
+
+# === CRONOLOGIA ===
+elif sezione == "📂 Cronologia":
+    st.title("📂 Cronologia blocchi salvati")
+
+    files_cronologia = sorted([f for f in os.listdir("cronologia") if f.endswith(".xlsx")], reverse=True)
+
+    if not files_cronologia:
+        st.info("Nessun blocco salvato ancora.")
+    else:
+        for nome_file in files_cronologia:
+            path = os.path.join("cronologia", nome_file)
+            st.markdown(f"### 📄 {nome_file}")
+            df = pd.read_excel(path)
+            st.dataframe(df, use_container_width=True)
+            with open(path, "rb") as f:
+                st.download_button("⬇️ Scarica", f, file_name=nome_file, key=nome_file)
