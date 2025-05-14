@@ -1,20 +1,18 @@
-
-
-# === estrattore.py ===
+# === estrattore.py (aggiornato) ===
 import fitz  # PyMuPDF
 import pandas as pd
 import re
 from datetime import datetime
 import os
 
-import os
 os.makedirs("output", exist_ok=True)
 
 def rimuovi_date(testo):
     pattern_date = r'\b\d{1,2}/\d{1,2}/\d{2,4}\b|\b\d{4}/\d{1,2}\b|\b\d{1,2}/\d{4}\b|\b\d{4}\b'
     return "; ".join([imp for imp in testo.split(";") if not re.search(pattern_date, imp)])
 
-def estrai_dati_da_pdf(pdf_files):
+# ✅ aggiornata la funzione con valore_minimo e data_limite
+def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
     estratti = []
 
     for pdf_path in pdf_files:
@@ -28,33 +26,35 @@ def estrai_dati_da_pdf(pdf_files):
         for i, page in enumerate(doc):
             testo = page.get_text()
 
+            # === Valore stimato
             valore_stimato = ""
             match_valore = re.search(r'Valore stimato\s+€?\s*([\d\.]+)', testo)
             if match_valore:
                 valore_stimato = match_valore.group(1).replace(".", "")
             try:
-                if valore_stimato and int(valore_stimato) < 400000:
+                if valore_stimato and int(valore_stimato) < valore_minimo:
                     continue
             except:
                 continue
 
+            # === ID Progetto
             id_match = re.search(r'ID Progetto\s+(\d+)', testo)
             id_progetto = id_match.group(1) if id_match else f"{nome_file}_pag_{i+1}"
 
-            if "Fase Programmazione" in testo:
-                continue
-
+            # === Data fine lavori
             fine_lavori_match = re.search(r'Fine lavori\s+(\d{4})/(\d{2})', testo)
             if fine_lavori_match:
                 anno, mese = int(fine_lavori_match.group(1)), int(fine_lavori_match.group(2))
-                if datetime(anno, mese, 1) < datetime(2025, 2, 1):
+                if datetime(anno, mese, 1).date() < data_limite:
                     continue
 
+            # === Indirizzo
             indirizzo = ""
             match_indirizzo = re.search(r'([^\n]*\d{5} [^\n]*\(.*?\))', testo)
             if match_indirizzo:
                 indirizzo = match_indirizzo.group(1).strip()
 
+            # === Imprese (prima riga utile dopo “Appalto”)
             imprese = []
             blocchi = testo.split("Appalto")
             for blocco in blocchi[1:]:
@@ -73,6 +73,7 @@ def estrai_dati_da_pdf(pdf_files):
             })
 
     return pd.DataFrame(estratti)
+
 
 def pulisci_unifica_filtra(df):
     final_rows = []
@@ -128,6 +129,7 @@ def pulisci_unifica_filtra(df):
 
     df_filtrato = df_unificato.loc[~mask_to_remove].drop(columns=["Imprese_clean", "Indirizzo_clean"])
     return df_filtrato
+
 
 def salva_csv(df, path="dati_corretti_aziende.csv"):
     df.to_csv(path, index=False, encoding="utf-8-sig")
