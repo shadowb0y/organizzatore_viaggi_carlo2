@@ -86,38 +86,26 @@ def interfaccia_pdf():
                     escluse_storiche = json.load(f)
             default_validi = [imp for imp in escluse_storiche if imp in tutte_imprese]
 
-            col1, col2 = st.columns([1, 3])
+            col1, col2 = st.columns([1, 2])
 
+            with col2:
+                selezionate = st.multiselect(
+                    "Seleziona le imprese da escludere:",
+                    tutte_imprese,
+                    default=default_validi
+                )
+            
             with col1:
                 st.markdown("### ❌ Imprese escluse")
-                escluse_correnti = st.session_state.get("imprese_da_escludere", [])
-                
-                if escluse_correnti:
-                    df_escluse = pd.DataFrame({"Impresa": escluse_correnti})
-                    st.dataframe(df_escluse, use_container_width=True, hide_index=True)
+                if selezionate:
+                    for impresa in selezionate:
+                        st.markdown(
+                            f'<div style="background-color:#ff4b4b;padding:4px 8px;border-radius:6px;margin-bottom:4px;color:white;font-weight:bold;">{impresa}</div>',
+                            unsafe_allow_html=True
+                        )
                 else:
-                    st.info("Nessuna impresa esclusa al momento.")
-            
-            with col2:
-                selezionate = st.multiselect("Seleziona le imprese da escludere:", tutte_imprese, default=default_validi)
+                    st.info("Nessuna impresa selezionata.")
 
-                if st.button("Aggiorna elenco imprese escluse", key="filtro_imprese"):
-                    def contiene_selezionata(val):
-                        if pd.isna(val): return False
-                        return any(sel in val for sel in selezionate)
-
-                    mask_da_rimuovere = df_loaded["Imprese"].apply(contiene_selezionata)
-                    df_filtrato_finale = df_loaded.loc[~mask_da_rimuovere].copy()
-                    df_filtrato_finale.to_csv(output_path, index=False, encoding="utf-8-sig")
-
-                    with open(ELIMINATI_FILE, "w", encoding="utf-8") as f:
-                        json.dump(selezionate, f, ensure_ascii=False, indent=2)
-
-                    st.session_state["imprese_da_escludere"] = selezionate
-
-                    st.success("✅ Righe contenenti imprese selezionate eliminate con successo (e memorizzate)")
-                    st.dataframe(df_filtrato_finale)
-                    st.download_button("Scarica CSV aggiornato", data=df_filtrato_finale.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
         st.subheader("Filtra file geocodificato e matrice distanze")
         if st.button("Applica filtro agli altri file", key="filtro_finale"):
