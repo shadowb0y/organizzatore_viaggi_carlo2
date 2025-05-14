@@ -1,4 +1,4 @@
-# === ui.py (aggiornato) ===
+# === ui.py (modulare) ===
 import streamlit as st
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import pandas as pd
@@ -9,10 +9,12 @@ import os
 import datetime
 
 os.makedirs("output", exist_ok=True)
-ELIMINATI_FILE = "imprese_escluse.json"
+
+# === PATH FILE ===
 VISITATI_FILE = "output/id_gia_visitati.json"
 NOMI_FILE = "data/nomi.csv"
 NOMI_ESCLUSI_FILE = "output/nomi_esclusi.json"
+
 
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
@@ -36,6 +38,7 @@ def interfaccia():
     tempo_massimo = ore * 3600 + minuti * 60
 
     return csv_path, json_path, tempo_visita, tempo_massimo
+
 
 def interfaccia_pdf():
     st.header("Estrazione dati da PDF di appalti")
@@ -85,8 +88,9 @@ def interfaccia_pdf():
         st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
         st.rerun()
 
-    # === Sottosezione: ID già visitati ===
-    st.subheader("📌 ID già visitati")
+
+def interfaccia_id_gia_visitati():
+    st.header("📌 ID già visitati")
 
     with st.expander("➕ Aggiungi nuovi ID visitati"):
         nuovi_id = st.text_area("Inserisci uno o più ID progetto separati da virgola, spazio, punto o punto e virgola")
@@ -124,8 +128,9 @@ def interfaccia_pdf():
                 st.markdown("### 📄 ID visitati salvati:")
                 st.dataframe(df_id_visitati.sort_values(by="Data", ascending=False), use_container_width=True)
 
-    # === Sottosezione: Filtri nomi aziende ===
-    st.subheader("🚫 Nomi aziende da filtrare")
+
+def interfaccia_filtro_nomi():
+    st.header("🚫 Nomi aziende da filtrare")
 
     if os.path.exists(NOMI_FILE):
         df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
