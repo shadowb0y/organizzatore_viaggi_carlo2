@@ -4,14 +4,18 @@ import pandas as pd
 import re
 from datetime import datetime
 import os
+import json
 
 os.makedirs("output", exist_ok=True)
+
+# === Costanti per filtri automatici ===
+ID_VISITATI_FILE = "output/id_gia_visitati.json"
+NOMI_ESCLUSI_FILE = "output/nomi_esclusi.json"
 
 def rimuovi_date(testo):
     pattern_date = r'\b\d{1,2}/\d{1,2}/\d{2,4}\b|\b\d{4}/\d{1,2}\b|\b\d{1,2}/\d{4}\b|\b\d{4}\b'
     return "; ".join([imp for imp in testo.split(";") if not re.search(pattern_date, imp)])
 
-# ✅ aggiornata la funzione con valore_minimo e data_limite
 def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
     estratti = []
 
@@ -26,7 +30,7 @@ def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
         for i, page in enumerate(doc):
             testo = page.get_text()
 
-            # === Valore stimato
+            # === Valore stimato ===
             valore_stimato = ""
             match_valore = re.search(r'Valore stimato\s+€?\s*([\d\.]+)', testo)
             if match_valore:
@@ -37,24 +41,24 @@ def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
             except:
                 continue
 
-            # === ID Progetto
+            # === ID progetto ===
             id_match = re.search(r'ID Progetto\s+(\d+)', testo)
             id_progetto = id_match.group(1) if id_match else f"{nome_file}_pag_{i+1}"
 
-            # === Data fine lavori
+            # === Fine lavori ===
             fine_lavori_match = re.search(r'Fine lavori\s+(\d{4})/(\d{2})', testo)
             if fine_lavori_match:
                 anno, mese = int(fine_lavori_match.group(1)), int(fine_lavori_match.group(2))
                 if datetime(anno, mese, 1).date() < data_limite:
                     continue
 
-            # === Indirizzo
+            # === Indirizzo ===
             indirizzo = ""
             match_indirizzo = re.search(r'([^\n]*\d{5} [^\n]*\(.*?\))', testo)
             if match_indirizzo:
                 indirizzo = match_indirizzo.group(1).strip()
 
-            # === Imprese (prima riga utile dopo “Appalto”)
+            # === Imprese ===
             imprese = []
             blocchi = testo.split("Appalto")
             for blocco in blocchi[1:]:
@@ -74,8 +78,19 @@ def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
 
     return pd.DataFrame(estratti)
 
-
 def pulisci_unifica_filtra(df):
+    # === Carica ID già visitati ===
+    id_da_escludere = set()
+    if os.path.exists(ID_VISITATI_FILE):
+        with open(ID_VISITATI_FILE, "r", encoding="utf-8") as f:
+            id_da_escludere = {r["ID Progetto"].strip() for r in json.load(f)}
+
+    # === Carica nomi da escludere ===
+    nomi_da_escludere = set()
+    if os.path.exists(NOMI_ESCLUSI_FILE):
+        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
+            nomi_da_escludere = {r["Nome"].lower().strip() for r in json.load(f)}
+
     final_rows = []
     for id_progetto, gruppo in df.groupby("ID Progetto"):
         indirizzi_validi = gruppo["Indirizzo"].dropna().loc[lambda x: x.str.strip() != ""]
@@ -101,6 +116,7 @@ def pulisci_unifica_filtra(df):
     df_finale = pd.DataFrame(final_rows)
     df_finale = df_finale[df_finale['Imprese'].str.strip() != '']
 
+    # === Unione imprese su stesso indirizzo ===
     duplicati = df_finale[df_finale.duplicated(subset="Indirizzo", keep=False)].copy()
     mappa_unione = (
         duplicati.groupby("Indirizzo")["Imprese"]
@@ -114,6 +130,7 @@ def pulisci_unifica_filtra(df):
         axis=1
     )
 
+    # === Rimozione record generici ===
     df_unificato["Imprese_clean"] = df_unificato["Imprese"].str.lower().str.strip()
     frasi_da_escludere = ["nominativo al momento non dichiarato", "assegnato"]
 
@@ -122,14 +139,28 @@ def pulisci_unifica_filtra(df):
         elementi = [e for e in elementi if e]
         return all(e in frasi_da_escludere for e in elementi)
 
-    mask_bad_impresa = df_unificato["Imprese_clean"].apply(contiene_solo_generiche)
+    mask_generici = df_unificato["Imprese_clean"].apply(contiene_solo_generiche)
     df_unificato["Indirizzo_clean"] = df_unificato["Indirizzo"].str.lower().str.strip()
     mask_inizia_con_cap = df_unificato["Indirizzo_clean"].str.match(r"^\d{5}\b")
-    mask_to_remove = mask_bad_impresa | mask_inizia_con_cap
 
-    df_filtrato = df_unificato.loc[~mask_to_remove].drop(columns=["Imprese_clean", "Indirizzo_clean"])
+    # === Rimozione per ID visitati ===
+    mask_id_esclusi = df_unificato["ID Progetto"].astype(str).isin(id_da_escludere)
+
+    # === Rimozione per nomi esclusi ===
+    def contiene_nome_escluso(testo):
+        if pd.isna(testo): return False
+        for nome in nomi_da_escludere:
+            if nome in testo.lower():
+                return True
+        return False
+
+    mask_nome_escluso = df_unificato["Imprese"].apply(contiene_nome_escluso)
+
+    # === Applica tutti i filtri
+    mask_finale = ~(mask_generici | mask_inizia_con_cap | mask_id_esclusi | mask_nome_escluso)
+    df_filtrato = df_unificato.loc[mask_finale].drop(columns=["Imprese_clean", "Indirizzo_clean"])
+
     return df_filtrato
-
 
 def salva_csv(df, path="dati_corretti_aziende.csv"):
     df.to_csv(path, index=False, encoding="utf-8-sig")

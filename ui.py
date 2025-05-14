@@ -1,15 +1,18 @@
 # === ui.py (aggiornato) ===
 import streamlit as st
-
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import pandas as pd
 import re
 import json
 from datetime import date
 import os
+import datetime
 
 os.makedirs("output", exist_ok=True)
 ELIMINATI_FILE = "imprese_escluse.json"
+VISITATI_FILE = "output/id_gia_visitati.json"
+NOMI_FILE = "data/nomi.csv"
+NOMI_ESCLUSI_FILE = "output/nomi_esclusi.json"
 
 def interfaccia():
     st.title("Costruttore di blocchi visite aziendali")
@@ -45,7 +48,7 @@ def interfaccia_pdf():
     filtro_valore_minimo = st.selectbox(
         "Escludi progetti con valore stimato inferiore a:",
         [100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000],
-        index=3  # default = 400.000 €
+        index=3
     )
 
     filtro_data_limite = st.date_input(
@@ -58,7 +61,6 @@ def interfaccia_pdf():
     if st.button("Estrai e filtra dati", key="estrai_pdf"):
         from estrattore import estrai_dati_da_pdf, pulisci_unifica_filtra
 
-        # ✅ Passaggio dei nuovi parametri
         df_raw = estrai_dati_da_pdf(selected_files, filtro_valore_minimo, filtro_data_limite)
         df_filtrato = pulisci_unifica_filtra(df_raw)
 
@@ -68,57 +70,98 @@ def interfaccia_pdf():
         st.dataframe(df_filtrato)
         st.download_button("Scarica CSV filtrato", data=df_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
-    if os.path.exists(output_path):
-        st.subheader("Filtro imprese da rimuovere")
-        df_loaded = pd.read_csv(output_path, dtype=str)
+    st.subheader("Filtra file geocodificato e matrice distanze")
+    if st.button("Applica filtro agli altri file", key="filtro_finale"):
+        from filtra_dataset import filtra_dati
 
-        if "Imprese" in df_loaded.columns and not df_loaded.empty:
-            tutte_imprese = set()
-            for lista in df_loaded["Imprese"].dropna():
-                for i in re.split(r";|\+", str(lista)):
-                    nome = i.strip()
-                    if nome:
-                        tutte_imprese.add(nome)
-            tutte_imprese = sorted(tutte_imprese)
+        input_csv_geo = "data/aziende_geocodificate.csv"
+        input_matrice_json = "data/matrice_durate.json"
+        output_csv_geo = "output/aziende_geocodificate_filtrate.csv"
+        output_matrice_json = "output/matrice_durate_filtrata.json"
 
-            escluse_storiche = []
-            if os.path.exists(ELIMINATI_FILE):
-                with open(ELIMINATI_FILE, "r", encoding="utf-8") as f:
-                    escluse_storiche = json.load(f)
-            default_validi = [imp for imp in escluse_storiche if imp in tutte_imprese]
+        df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
+        st.success("✅ File geocodificato e matrice filtrati correttamente")
 
-            col1, col2 = st.columns([1, 2])
+        st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
+        st.rerun()
 
-            with col2:
-                selezionate = st.multiselect(
-                    "Seleziona le imprese da escludere:",
-                    tutte_imprese,
-                    default=default_validi
-                )
+    # === Sottosezione: ID già visitati ===
+    st.subheader("📌 ID già visitati")
 
-            with col1:
-                st.markdown("Imprese escluse")
-                if selezionate:
-                    for impresa in selezionate:
-                        st.markdown(
-                            f'<div style="background-color:#ff4b4b;padding:4px 8px;border-radius:6px;margin-bottom:4px;color:white;font-weight:bold;">{impresa}</div>',
-                            unsafe_allow_html=True
-                        )
+    with st.expander("➕ Aggiungi nuovi ID visitati"):
+        nuovi_id = st.text_area("Inserisci uno o più ID progetto separati da virgola, spazio, punto o punto e virgola")
+        note = st.text_input("Note (facoltative)")
+        data_visita = st.date_input("Data visita", value=datetime.date.today())
+
+        if st.button("Salva ID visitati"):
+            ids = [i.strip() for i in re.split(r"[,\s;\.]+", nuovi_id) if i.strip()]
+            if ids:
+                record = []
+                for id_ in ids:
+                    record.append({
+                        "ID Progetto": id_,
+                        "Data": str(data_visita),
+                        "Note": note
+                    })
+
+                if os.path.exists(VISITATI_FILE):
+                    with open(VISITATI_FILE, "r", encoding="utf-8") as f:
+                        esistenti = json.load(f)
                 else:
-                    st.info("Nessuna impresa selezionata.")
+                    esistenti = []
 
+                esistenti.extend(record)
+                with open(VISITATI_FILE, "w", encoding="utf-8") as f:
+                    json.dump(esistenti, f, ensure_ascii=False, indent=2)
 
-        st.subheader("Filtra file geocodificato e matrice distanze")
-        if st.button("Applica filtro agli altri file", key="filtro_finale"):
-            from filtra_dataset import filtra_dati
+                st.success(f"✅ Salvati {len(ids)} ID visitati.")
 
-            input_csv_geo = "data/aziende_geocodificate.csv"
-            input_matrice_json = "data/matrice_durate.json"
-            output_csv_geo = "output/aziende_geocodificate_filtrate.csv"
-            output_matrice_json = "output/matrice_durate_filtrata.json"
+    if os.path.exists(VISITATI_FILE):
+        with open(VISITATI_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            df_id_visitati = pd.DataFrame(data)
+            if not df_id_visitati.empty:
+                st.markdown("### 📄 ID visitati salvati:")
+                st.dataframe(df_id_visitati.sort_values(by="Data", ascending=False), use_container_width=True)
 
-            df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
-            st.success("✅ File geocodificato e matrice filtrati correttamente")
+    # === Sottosezione: Filtri nomi aziende ===
+    st.subheader("🚫 Nomi aziende da filtrare")
 
-            st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
-            st.rerun()
+    if os.path.exists(NOMI_FILE):
+        df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
+        lista_nomi = sorted(set(df_nomi[0].tolist()))
+
+        with st.expander("➕ Aggiungi nuovi nomi da escludere"):
+            selezionati = st.multiselect("Seleziona uno o più nomi da escludere", options=lista_nomi)
+            nota = st.text_input("Note (facoltative)", key="nota_esclusione_nomi")
+            data_esclusione = st.date_input("Data", value=date.today(), key="data_esclusione_nomi")
+
+            if st.button("Salva nomi esclusi"):
+                if selezionati:
+                    nuovi_record = [
+                        {"Nome": nome, "Data": str(data_esclusione), "Note": nota}
+                        for nome in selezionati
+                    ]
+
+                    if os.path.exists(NOMI_ESCLUSI_FILE):
+                        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
+                            esistenti = json.load(f)
+                    else:
+                        esistenti = []
+
+                    esistenti.extend(nuovi_record)
+
+                    with open(NOMI_ESCLUSI_FILE, "w", encoding="utf-8") as f:
+                        json.dump(esistenti, f, ensure_ascii=False, indent=2)
+
+                    st.success(f"✅ Salvati {len(selezionati)} nomi esclusi.")
+    else:
+        st.error(f"⚠️ File '{NOMI_FILE}' non trovato. Caricalo manualmente nella cartella /data.")
+
+    if os.path.exists(NOMI_ESCLUSI_FILE):
+        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
+            dati_nomi = json.load(f)
+            df_esclusi = pd.DataFrame(dati_nomi)
+            if not df_esclusi.empty:
+                st.markdown("### 📄 Nomi esclusi salvati:")
+                st.dataframe(df_esclusi.sort_values(by="Data", ascending=False), use_container_width=True)
