@@ -1,6 +1,6 @@
 # === app.py ===
 import streamlit as st
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")  # <--- deve essere SUBITO dopo l'import
 
 from blocchi import genera_blocchi
 from completamento import completa_blocchi
