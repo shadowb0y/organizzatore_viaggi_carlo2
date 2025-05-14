@@ -1,5 +1,7 @@
 # === app.py ===
 import streamlit as st
+st.set_page_config(layout="wide")
+
 from blocchi import genera_blocchi
 from completamento import completa_blocchi
 from mappa import genera_mappa

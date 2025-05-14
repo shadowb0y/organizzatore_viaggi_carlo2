@@ -1,5 +1,7 @@
 # === ui.py (aggiornato) ===
 import streamlit as st
+st.set_page_config(layout="wide")
+
 from config import DEFAULT_TEMPO_VISITA, DEFAULT_TEMPO_MASSIMO
 import pandas as pd
 import re
@@ -94,9 +96,9 @@ def interfaccia_pdf():
                     tutte_imprese,
                     default=default_validi
                 )
-            
+
             with col1:
-                st.markdown("### ❌ Imprese escluse")
+                st.markdown("Imprese escluse")
                 if selezionate:
                     for impresa in selezionate:
                         st.markdown(
