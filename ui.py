@@ -122,9 +122,19 @@ def interfaccia_id_gia_visitati():
         with open(VISITATI_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
             df_id_visitati = pd.DataFrame(data)
-            if not df_id_visitati.empty:
-                st.markdown("### 📄 ID visitati salvati:")
-                st.dataframe(df_id_visitati.sort_values(by="Data", ascending=False), use_container_width=True)
+
+        if not df_id_visitati.empty:
+            st.markdown("### 📄 ID visitati salvati:")
+
+            for i, row in df_id_visitati.sort_values(by="Data", ascending=False).iterrows():
+                col1, col2, col3 = st.columns([4, 2, 1])
+                with col1:
+                    st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
+                with col3:
+                    if st.button("❌", key=f"del_id_{i}"):
+                        df_id_visitati = df_id_visitati.drop(i)
+                        df_id_visitati.to_json(VISITATI_FILE, orient="records", force_ascii=False, indent=2)
+                        st.experimental_rerun()
 
 def interfaccia_filtro_nomi():
     st.header("🚫 Nomi aziende da filtrare")
@@ -164,9 +174,20 @@ def interfaccia_filtro_nomi():
         with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
             dati_nomi = json.load(f)
             df_esclusi = pd.DataFrame(dati_nomi)
-            if not df_esclusi.empty:
-                st.markdown("### 📄 Nomi esclusi salvati:")
-                st.dataframe(df_esclusi.sort_values(by="Data", ascending=False), use_container_width=True)
+    
+        if not df_esclusi.empty:
+            st.markdown("### 📄 Nomi esclusi salvati:")
+    
+            for i, row in df_esclusi.sort_values(by="Data", ascending=False).iterrows():
+                col1, col2 = st.columns([5, 1])
+                with col1:
+                    st.write(f"🏢 {row['Nome']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
+                with col2:
+                    if st.button("❌", key=f"del_nome_{i}"):
+                        df_esclusi = df_esclusi.drop(i)
+                        df_esclusi.to_json(NOMI_ESCLUSI_FILE, orient="records", force_ascii=False, indent=2)
+                        st.experimental_rerun()
+
 
 
 
