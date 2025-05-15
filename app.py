@@ -36,9 +36,9 @@ sezione = st.sidebar.selectbox(
     [
         "Blocchi Visite Aziendali",
         "Estrazione PDF Appalti",
-        "🚫 ID da filtrare",
-        "🚫 Aziende da filtrare",
-        "📂 Cronologia blocchi"
+        "ID da filtrare",
+        "Aziende da filtrare",
+        "Cronologia blocchi"
     ],
     index=0
 )
