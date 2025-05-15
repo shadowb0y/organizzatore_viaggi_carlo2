@@ -172,7 +172,6 @@ def interfaccia_filtro_nomi():
 
 
 
-
 def interfaccia_cronologia():
     st.title("📂 Cronologia blocchi salvati")
 
@@ -189,12 +188,16 @@ def interfaccia_cronologia():
         col1, col2 = st.columns([8, 1])
         with col1:
             st.markdown(f"### 📄 {nome_file}")
-            df = pd.read_excel(path)
+
+            # 👇 Usa copia da session_state se disponibile
+            df = st.session_state.get(f"df_blocco_{nome_file}", None)
+            if df is None:
+                df = pd.read_excel(path)
+
             st.dataframe(df, use_container_width=True)
             with open(path, "rb") as f:
                 st.download_button("Scarica (il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
 
-            # === Invio a Google Sheets ===
             nome_tab = nome_file.replace(".xlsx", "").replace(":", "-").replace(" ", "_")
             if st.button(f"🔁 Salva su Google Sheets", key=f"save_google_{nome_file}"):
                 salva_blocco_su_google_sheets(df, nome_tab)
