@@ -204,8 +204,16 @@ def interfaccia_cronologia():
 
     for nome_file in files_cronologia:
         path = os.path.join(cartella, nome_file)
-        st.markdown(f"### 📄 {nome_file}")
-        df = pd.read_excel(path)
-        st.dataframe(df, use_container_width=True)
-        with open(path, "rb") as f:
-            st.download_button("⬇️ Scarica", f, file_name=nome_file, key=nome_file)
+
+        col1, col2 = st.columns([8, 1])
+        with col1:
+            st.markdown(f"### 📄 {nome_file}")
+            df = pd.read_excel(path)
+            st.dataframe(df, use_container_width=True)
+            with open(path, "rb") as f:
+                st.download_button("⬇️ Scarica", f, file_name=nome_file, key=f"dl_{nome_file}")
+        with col2:
+            if st.button("🗑", key=f"del_{nome_file}"):
+                os.remove(path)
+                st.success(f"✅ File '{nome_file}' eliminato.")
+                st.rerun()
