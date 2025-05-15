@@ -231,7 +231,7 @@ def interfaccia_cronologia():
             df = pd.read_excel(path)
             st.dataframe(df, use_container_width=True)
             with open(path, "rb") as f:
-                st.download_button("Scarica(il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
+                st.download_button("Scarica (il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
         with col2:
             if st.button("🗑", key=f"del_{nome_file}"):
                 st.session_state[f"conferma_{nome_file}"] = True
