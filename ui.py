@@ -7,6 +7,7 @@ import json
 from datetime import date
 import os
 import datetime
+from google_sheets import leggi_id_visitati, aggiungi_id_visitati, elimina_id_visitato, salva_blocco_su_google_sheets, registra_blocco_in_storico
 
 os.makedirs("output", exist_ok=True)
 os.makedirs("cronologia", exist_ok=True)  # nuova cartella per blocchi salvati
@@ -90,10 +91,10 @@ def interfaccia_pdf():
 
         st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
         st.rerun()
-
 def interfaccia_id_gia_visitati():
     st.header("🧹 ID già visitati")
 
+    # === Aggiunta nuovi ID ===
     with st.expander("➕ Aggiungi nuovi ID visitati"):
         nuovi_id = st.text_area("Inserisci uno o più ID progetto separati da virgola, spazio, punto o punto e virgola")
         note = st.text_input("Note (facoltative)")
@@ -102,110 +103,70 @@ def interfaccia_id_gia_visitati():
         if st.button("Salva ID visitati"):
             ids = [i.strip() for i in re.split(r"[,\s;\.]+", nuovi_id) if i.strip()]
             if ids:
-                record = []
-                for id_ in ids:
-                    record.append({
-                        "ID Progetto": id_,
-                        "Data": str(data_visita),
-                        "Note": note
-                    })
-
-                if os.path.exists(VISITATI_FILE):
-                    with open(VISITATI_FILE, "r", encoding="utf-8") as f:
-                        esistenti = json.load(f)
-                else:
-                    esistenti = []
-
-                esistenti.extend(record)
-                with open(VISITATI_FILE, "w", encoding="utf-8") as f:
-                    json.dump(esistenti, f, ensure_ascii=False, indent=2)
-
+                aggiungi_id_visitati(ids, data_visita, note)
                 st.success(f"✅ Salvati {len(ids)} ID visitati.")
+                st.rerun()
 
-    if os.path.exists(VISITATI_FILE):
-        with open(VISITATI_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            df_id_visitati = pd.DataFrame(data)
+    # === Visualizzazione + Eliminazione ===
+    df_id_visitati = leggi_id_visitati()
 
-        if not df_id_visitati.empty:
-            st.markdown("### 📄 ID visitati salvati:")
+    if not df_id_visitati.empty:
+        st.markdown("### 📄 ID visitati salvati:")
 
-            for i, row in df_id_visitati.sort_values(by="Data", ascending=False).iterrows():
-                col1, col2, col3 = st.columns([4, 2, 1])
-                with col1:
-                    st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
-                with col3:
-                    if st.button("❌", key=f"del_id_{i}"):
-                        st.session_state[f"conferma_id_{i}"] = True
+        for i, row in df_id_visitati.sort_values(by="Data", ascending=False).iterrows():
+            col1, col2, col3 = st.columns([4, 2, 1])
+            with col1:
+                st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
+            with col3:
+                if st.button("❌", key=f"del_id_{i}"):
+                    st.session_state[f"conferma_id_{i}"] = True
 
-                    if st.session_state.get(f"conferma_id_{i}", False):
-                        with st.expander(f"⚠️ Conferma eliminazione ID {row['ID Progetto']}", expanded=True):
-                            st.warning("Questa azione eliminerà definitivamente questo ID. Procedere?")
-                            if st.button("✅ Elimina definitivamente", key=f"conferma_del_id_{i}"):
-                                df_id_visitati = df_id_visitati.drop(i)
-                                df_id_visitati.to_json(VISITATI_FILE, orient="records", force_ascii=False, indent=2)
-                                st.session_state.pop(f"conferma_id_{i}")
-                                st.rerun()
+                if st.session_state.get(f"conferma_id_{i}", False):
+                    with st.expander(f"⚠️ Conferma eliminazione ID {row['ID Progetto']}", expanded=True):
+                        st.warning("Questa azione eliminerà definitivamente questo ID. Procedere?")
+                        if st.button("✅ Elimina definitivamente", key=f"conferma_del_id_{i}"):
+                            elimina_id_visitato(i)
+                            st.session_state.pop(f"conferma_id_{i}")
+                            st.rerun()
 
+
+from google_sheets import leggi_nomi_esclusi, aggiungi_nomi_esclusi, elimina_nome_escluso
 
 def interfaccia_filtro_nomi():
     st.header("🧹 Nomi aziende da filtrare")
 
-    if os.path.exists(NOMI_FILE):
-        df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
-        lista_nomi = sorted(set(df_nomi[0].tolist()))
+    with st.expander("➕ Aggiungi nuovi nomi da escludere"):
+        nuovi_nomi = st.text_area("Inserisci uno o più nomi separati da virgola, punto e virgola o a capo")
+        nota = st.text_input("Note (facoltative)", key="nota_esclusione_nomi")
+        data_esclusione = st.date_input("Data", value=date.today(), key="data_esclusione_nomi")
 
-        with st.expander("➕ Aggiungi nuovi nomi da escludere"):
-            selezionati = st.multiselect("Seleziona uno o più nomi da escludere", options=lista_nomi)
-            nota = st.text_input("Note (facoltative)", key="nota_esclusione_nomi")
-            data_esclusione = st.date_input("Data", value=date.today(), key="data_esclusione_nomi")
+        if st.button("Salva nomi esclusi"):
+            nomi = [n.strip() for n in re.split(r"[,\n;\r]+", nuovi_nomi) if n.strip()]
+            if nomi:
+                aggiungi_nomi_esclusi(nomi, data_esclusione, nota)
+                st.success(f"✅ Salvati {len(nomi)} nomi esclusi.")
+                st.rerun()
 
-            if st.button("Salva nomi esclusi"):
-                if selezionati:
-                    nuovi_record = [
-                        {"Nome": nome, "Data": str(data_esclusione), "Note": nota}
-                        for nome in selezionati
-                    ]
+    df_esclusi = leggi_nomi_esclusi()
 
-                    if os.path.exists(NOMI_ESCLUSI_FILE):
-                        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
-                            esistenti = json.load(f)
-                    else:
-                        esistenti = []
+    if not df_esclusi.empty:
+        st.markdown("### 📄 Nomi esclusi salvati:")
 
-                    esistenti.extend(nuovi_record)
+        for i, row in df_esclusi.sort_values(by="Data", ascending=False).iterrows():
+            col1, col2 = st.columns([5, 1])
+            with col1:
+                st.write(f"🏢 {row['Nome']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
+            with col2:
+                if st.button("❌", key=f"del_nome_{i}"):
+                    st.session_state[f"conferma_nome_{i}"] = True
 
-                    with open(NOMI_ESCLUSI_FILE, "w", encoding="utf-8") as f:
-                        json.dump(esistenti, f, ensure_ascii=False, indent=2)
-
-                    st.success(f"✅ Salvati {len(selezionati)} nomi esclusi.")
-    else:
-        st.error(f"⚠️ File '{NOMI_FILE}' non trovato. Caricalo manualmente nella cartella /data.")
-
-    if os.path.exists(NOMI_ESCLUSI_FILE):
-        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
-            dati_nomi = json.load(f)
-            df_esclusi = pd.DataFrame(dati_nomi)
-
-        if not df_esclusi.empty:
-            st.markdown("### 📄 Nomi esclusi salvati:")
-
-            for i, row in df_esclusi.sort_values(by="Data", ascending=False).iterrows():
-                col1, col2 = st.columns([5, 1])
-                with col1:
-                    st.write(f"🏢 {row['Nome']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
-                with col2:
-                    if st.button("❌", key=f"del_nome_{i}"):
-                        st.session_state[f"conferma_nome_{i}"] = True
-
-                    if st.session_state.get(f"conferma_nome_{i}", False):
-                        with st.expander(f"⚠️ Conferma eliminazione '{row['Nome']}'", expanded=True):
-                            st.warning("Questa azione eliminerà definitivamente questo nome. Procedere?")
-                            if st.button("✅ Elimina definitivamente", key=f"conferma_del_nome_{i}"):
-                                df_esclusi = df_esclusi.drop(i)
-                                df_esclusi.to_json(NOMI_ESCLUSI_FILE, orient="records", force_ascii=False, indent=2)
-                                st.session_state.pop(f"conferma_nome_{i}")
-                                st.rerun()
+                if st.session_state.get(f"conferma_nome_{i}", False):
+                    with st.expander(f"⚠️ Conferma eliminazione '{row['Nome']}'", expanded=True):
+                        st.warning("Questa azione eliminerà definitivamente questo nome. Procedere?")
+                        if st.button("✅ Elimina definitivamente", key=f"conferma_del_nome_{i}"):
+                            elimina_nome_escluso(i)
+                            st.session_state.pop(f"conferma_nome_{i}")
+                            st.rerun()
 
 
 
@@ -232,6 +193,14 @@ def interfaccia_cronologia():
             st.dataframe(df, use_container_width=True)
             with open(path, "rb") as f:
                 st.download_button("Scarica (il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
+
+            # === Invio a Google Sheets ===
+            nome_tab = nome_file.replace(".xlsx", "").replace(":", "-").replace(" ", "_")
+            if st.button(f"🔁 Salva su Google Sheets", key=f"save_google_{nome_file}"):
+                salva_blocco_su_google_sheets(df, nome_tab)
+                registra_blocco_in_storico(nome_tab, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), len(df))
+                st.success(f"✅ Salvato su Google Sheets come '{nome_tab}'")
+
         with col2:
             if st.button("🗑", key=f"del_{nome_file}"):
                 st.session_state[f"conferma_{nome_file}"] = True

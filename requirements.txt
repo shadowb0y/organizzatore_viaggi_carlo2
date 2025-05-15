@@ -7,3 +7,5 @@ networkx
 urllib3
 PyMuPDF
 datetime
+gspread
+oauth2client
