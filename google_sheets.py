@@ -21,7 +21,15 @@ def get_worksheet(tab_name):
         worksheet = spreadsheet.worksheet(tab_name)
     except gspread.exceptions.WorksheetNotFound:
         worksheet = spreadsheet.add_worksheet(title=tab_name, rows="100", cols="3")
-        worksheet.append_row(["ID Progetto", "Data", "Note"])
+        
+        if tab_name == "ID_Visitati":
+            worksheet.append_row(["ID Progetto", "Data", "Note"])
+        elif tab_name == "Nomi_Esclusi":
+            worksheet.append_row(["Nome", "Data", "Note"])
+        elif tab_name == "Storico_Blocchi":
+            worksheet.append_row(["Nome Blocco", "Data", "N. Aziende"])
+
+
     return worksheet
 
 def leggi_id_visitati():
