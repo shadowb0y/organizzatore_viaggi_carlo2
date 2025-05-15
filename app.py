@@ -63,13 +63,14 @@ if sezione == "🧠 Ottimizza visite":
         blocchi_disponibili = df_blocchi["Blocco"].unique().tolist()
         blocco_scelto = st.selectbox("Seleziona un blocco da visualizzare o scaricare:", blocchi_disponibili)
 
-        df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto]
+        df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto].copy()
         st.dataframe(df_blocco_singolo, use_container_width=True)
 
         if st.button("📥 Scarica blocco selezionato"):
             ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
             nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
             path_file = os.path.join("cronologia", nome_file)
+
             if "Link Google Maps" in df_blocco_singolo.columns:
                 df_blocco_singolo["Link Google Maps"] = df_blocco_singolo["Link Google Maps"].apply(
                     lambda url: f'=HYPERLINK("{url}", "Apri mappa")' if pd.notna(url) and "http" in url else ""
