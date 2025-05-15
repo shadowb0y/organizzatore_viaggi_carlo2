@@ -43,9 +43,13 @@ def interfaccia_pdf():
     st.header("Estrazione dati da PDF di appalti")
 
     pdf_folder = "pdf"
-    pdf_files = [os.path.join(pdf_folder, f) for f in os.listdir(pdf_folder) if f.endswith(".pdf")]
-    selected_files = st.multiselect("Seleziona i PDF da elaborare:", pdf_files, default=pdf_files)
-
+    # Lista dei PDF solo con nome visibile, ma mantieni path interno
+    pdf_files = [f for f in os.listdir("pdf") if f.endswith(".pdf")]
+    file_paths = {f: os.path.join("pdf", f) for f in pdf_files}
+    
+    selected_filenames = st.multiselect("Seleziona i PDF da elaborare:", options=pdf_files, default=pdf_files)
+    selected_files = [file_paths[f] for f in selected_filenames]
+    
     st.subheader("Filtri disponibili")
     filtro_valore_minimo = st.selectbox(
         "Escludi progetti con valore stimato inferiore a:",
@@ -193,7 +197,7 @@ def interfaccia_filtro_nomi():
                 with col2:
                     if st.button("❌", key=f"del_nome_{i}"):
                         st.session_state[f"conferma_nome_{i}"] = True
-                    
+
                     if st.session_state.get(f"conferma_nome_{i}", False):
                         with st.expander(f"⚠️ Conferma eliminazione '{row['Nome']}'", expanded=True):
                             st.warning("Questa azione eliminerà definitivamente questo nome. Procedere?")
