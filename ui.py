@@ -132,9 +132,17 @@ def interfaccia_id_gia_visitati():
                     st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
                 with col3:
                     if st.button("❌", key=f"del_id_{i}"):
-                        df_id_visitati = df_id_visitati.drop(i)
-                        df_id_visitati.to_json(VISITATI_FILE, orient="records", force_ascii=False, indent=2)
-                        st.rerun()
+                        st.session_state[f"conferma_id_{i}"] = True
+
+                    if st.session_state.get(f"conferma_id_{i}", False):
+                        with st.expander(f"⚠️ Conferma eliminazione ID {row['ID Progetto']}", expanded=True):
+                            st.warning("Questa azione eliminerà definitivamente questo ID. Procedere?")
+                            if st.button("✅ Elimina definitivamente", key=f"conferma_del_id_{i}"):
+                                df_id_visitati = df_id_visitati.drop(i)
+                                df_id_visitati.to_json(VISITATI_FILE, orient="records", force_ascii=False, indent=2)
+                                st.session_state.pop(f"conferma_id_{i}")
+                                st.rerun()
+
 
 def interfaccia_filtro_nomi():
     st.header("🚫 Nomi aziende da filtrare")
@@ -184,10 +192,18 @@ def interfaccia_filtro_nomi():
                     st.write(f"🏢 {row['Nome']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
                 with col2:
                     if st.button("❌", key=f"del_nome_{i}"):
-                        df_esclusi = df_esclusi.drop(i)
-                        df_esclusi.to_json(NOMI_ESCLUSI_FILE, orient="records", force_ascii=False, indent=2)
-                        st.rerun()
-()
+                        st.session_state[f"conferma_nome_{i}"] = True
+                    
+                    if st.session_state.get(f"conferma_nome_{i}", False):
+                        with st.expander(f"⚠️ Conferma eliminazione '{row['Nome']}'", expanded=True):
+                            st.warning("Questa azione eliminerà definitivamente questo nome. Procedere?")
+                            if st.button("✅ Elimina definitivamente", key=f"conferma_del_nome_{i}"):
+                                df_esclusi = df_esclusi.drop(i)
+                                df_esclusi.to_json(NOMI_ESCLUSI_FILE, orient="records", force_ascii=False, indent=2)
+                                st.session_state.pop(f"conferma_nome_{i}")
+                                st.rerun()
+
+
 
 
 
@@ -214,6 +230,17 @@ def interfaccia_cronologia():
                 st.download_button("⬇️ Scarica", f, file_name=nome_file, key=f"dl_{nome_file}")
         with col2:
             if st.button("🗑", key=f"del_{nome_file}"):
-                os.remove(path)
-                st.success(f"✅ File '{nome_file}' eliminato.")
-                st.rerun()
+                st.session_state[f"conferma_{nome_file}"] = True
+
+            if st.session_state.get(f"conferma_{nome_file}", False):
+                with st.expander(f"⚠️ Conferma eliminazione '{nome_file}'", expanded=True):
+                    st.warning("Questa azione eliminerà definitivamente il file. Procedere?")
+                    if st.button("✅ Elimina definitivamente", key=f"conferma_del_{nome_file}"):
+                        if os.path.exists(path):
+                            os.remove(path)
+                            st.success(f"✅ File '{nome_file}' eliminato.")
+                            st.session_state.pop(f"conferma_{nome_file}")
+                            st.rerun()
+                        else:
+                            st.error(f"❌ File '{nome_file}' non trovato.")
+                            st.session_state.pop(f"conferma_{nome_file}")

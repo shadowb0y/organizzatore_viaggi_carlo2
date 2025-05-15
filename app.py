@@ -87,17 +87,5 @@ elif sezione == "🚫 Nomi da filtrare":
 
 # === CRONOLOGIA ===
 elif sezione == "📂 Cronologia":
-    st.title("📂 Cronologia blocchi salvati")
-
-    files_cronologia = sorted([f for f in os.listdir("cronologia") if f.endswith(".xlsx")], reverse=True)
-
-    if not files_cronologia:
-        st.info("Nessun blocco salvato ancora.")
-    else:
-        for nome_file in files_cronologia:
-            path = os.path.join("cronologia", nome_file)
-            st.markdown(f"### 📄 {nome_file}")
-            df = pd.read_excel(path)
-            st.dataframe(df, use_container_width=True)
-            with open(path, "rb") as f:
-                st.download_button("⬇️ Scarica", f, file_name=nome_file, key=nome_file)
+    from ui import interfaccia_cronologia
+    interfaccia_cronologia()
