@@ -1,0 +1,17 @@
+# Ignora credenziali Google
+.streamlit/creds.json
+
+# Ignora cartelle di output temporanee
+output/
+cronologia/
+
+# Ignora file Excel o CSV locali
+*.xlsx
+*.csv
+
+# Ignora ambiente virtuale
+venv/
+
+# Ignora file di sistema
+__pycache__/
+.DS_Store
