@@ -69,15 +69,11 @@ if sezione == "🧠 Ottimizza visite":
             ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
             nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
             path_file = os.path.join("cronologia", nome_file)
-
-            # ✅ Formatta i link per Excel
-            if "Link Google Maps" in df_blocco_singolo.columns:
-                df_blocco_singolo["Link Google Maps"] = df_blocco_singolo["Link Google Maps"].apply(
-                    lambda url: f'=HYPERLINK("{url}", "Apri mappa")' if pd.notna(url) and "http" in url else ""
-                )
-
+        
+            # ✅ Nessuna trasformazione, salva i dati come sono
             df_blocco_singolo.to_excel(path_file, index=False)
             st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
+
 
 # === ESTRAZIONE PDF APPALTI ===
 elif sezione == "🖥️ Parsing PDF":
