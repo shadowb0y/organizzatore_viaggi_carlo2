@@ -46,10 +46,10 @@ def interfaccia_pdf():
     # Lista dei PDF solo con nome visibile, ma mantieni path interno
     pdf_files = [f for f in os.listdir("pdf") if f.endswith(".pdf")]
     file_paths = {f: os.path.join("pdf", f) for f in pdf_files}
-    
+
     selected_filenames = st.multiselect("Seleziona i PDF da elaborare:", options=pdf_files, default=pdf_files)
     selected_files = [file_paths[f] for f in selected_filenames]
-    
+
     st.subheader("Filtri disponibili")
     filtro_valore_minimo = st.selectbox(
         "Escludi progetti con valore stimato inferiore a:",
@@ -149,7 +149,7 @@ def interfaccia_id_gia_visitati():
 
 
 def interfaccia_filtro_nomi():
-    st.header("🚫 Nomi aziende da filtrare")
+    st.header("🚫 Aziende da filtrare")
 
     if os.path.exists(NOMI_FILE):
         df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
@@ -231,7 +231,7 @@ def interfaccia_cronologia():
             df = pd.read_excel(path)
             st.dataframe(df, use_container_width=True)
             with open(path, "rb") as f:
-                st.download_button("⬇️ Scarica", f, file_name=nome_file, key=f"dl_{nome_file}")
+                st.download_button("Scarica(il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
         with col2:
             if st.button("🗑", key=f"del_{nome_file}"):
                 st.session_state[f"conferma_{nome_file}"] = True

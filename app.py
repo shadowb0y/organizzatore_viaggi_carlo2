@@ -34,11 +34,11 @@ if not st.session_state.get("gia_pulito", False):
 sezione = st.sidebar.selectbox(
     "Seleziona una sezione",
     [
-        "Blocchi Visite Aziendali",
-        "Estrazione PDF Appalti",
-        "📌 ID già visitati",
-        "🚫 Nomi da filtrare",
-        "📂 Cronologia"
+        "🧪 Blocchi Visite Aziendali",
+        "🕹️ Estrazione PDF Appalti",
+        "🚫 ID da filtrare",
+        "🚫 Aziende da filtrare",
+        "📂 Cronologia blocchi"
     ],
     index=0
 )
