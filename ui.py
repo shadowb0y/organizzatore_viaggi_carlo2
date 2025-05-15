@@ -134,7 +134,7 @@ def interfaccia_id_gia_visitati():
                     if st.button("❌", key=f"del_id_{i}"):
                         df_id_visitati = df_id_visitati.drop(i)
                         df_id_visitati.to_json(VISITATI_FILE, orient="records", force_ascii=False, indent=2)
-                        st.experimental_rerun()
+                        st.rerun()
 
 def interfaccia_filtro_nomi():
     st.header("🚫 Nomi aziende da filtrare")
@@ -174,10 +174,10 @@ def interfaccia_filtro_nomi():
         with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
             dati_nomi = json.load(f)
             df_esclusi = pd.DataFrame(dati_nomi)
-    
+
         if not df_esclusi.empty:
             st.markdown("### 📄 Nomi esclusi salvati:")
-    
+
             for i, row in df_esclusi.sort_values(by="Data", ascending=False).iterrows():
                 col1, col2 = st.columns([5, 1])
                 with col1:
@@ -186,7 +186,8 @@ def interfaccia_filtro_nomi():
                     if st.button("❌", key=f"del_nome_{i}"):
                         df_esclusi = df_esclusi.drop(i)
                         df_esclusi.to_json(NOMI_ESCLUSI_FILE, orient="records", force_ascii=False, indent=2)
-                        st.experimental_rerun()
+                        st.rerun()
+()
 
 
 
