@@ -34,15 +34,15 @@ if not st.session_state.get("gia_pulito", False):
 sezione = st.sidebar.selectbox(
     "Seleziona una sezione",
     [
-        "Blocchi Visite Aziendali",
-        "Estrazione PDF Appalti",
-        "ID da filtrare",
-        "Aziende da filtrare",
-        "Cronologia blocchi"
+        "🧠 Ottimizza visite",
+        "🖥️ Parsing PDF",
+        "🧹 Filtro ID",
+        "🧹 Filtro nomi imprese",
+        "📂 Storico blocchi"
     ],
     index=0
 )
-if sezione == "Blocchi Visite Aziendali":
+if sezione == "🧠 Ottimizza visite":
     csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()
 
     if csv_path and json_path and tempo_visita and tempo_massimo:
@@ -74,18 +74,18 @@ if sezione == "Blocchi Visite Aziendali":
             st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
 
 # === ESTRAZIONE PDF APPALTI ===
-elif sezione == "Estrazione PDF Appalti":
+elif sezione == "🖥️ Parsing PDF":
     interfaccia_pdf()
 
 # === ID GIÀ VISITATI ===
-elif sezione == "📌 ID già visitati":
+elif sezione == "🧹 Filtro ID":
     interfaccia_id_gia_visitati()
 
 # === NOMI DA FILTRARE ===
-elif sezione == "🚫 Nomi da filtrare":
+elif sezione == "🧹 Filtro nomi imprese":
     interfaccia_filtro_nomi()
 
 # === CRONOLOGIA ===
-elif sezione == "📂 Cronologia":
+elif sezione == "📂 Storico blocchi":
     from ui import interfaccia_cronologia
     interfaccia_cronologia()

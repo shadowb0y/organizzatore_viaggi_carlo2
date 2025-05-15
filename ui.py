@@ -17,7 +17,7 @@ NOMI_FILE = "data/nomi.csv"
 NOMI_ESCLUSI_FILE = "output/nomi_esclusi.json"
 
 def interfaccia():
-    st.title("Costruttore di blocchi visite aziendali")
+    st.title("🕹️ Costruttore di blocchi visite aziendali")
 
     csv_path = "output/aziende_geocodificate_filtrate.csv"
     json_path = "output/matrice_durate_filtrata.json"
@@ -40,7 +40,7 @@ def interfaccia():
     return csv_path, json_path, tempo_visita, tempo_massimo
 
 def interfaccia_pdf():
-    st.header("Estrazione dati da PDF di appalti")
+    st.header("🖥️ Estrazione dati da PDF di appalti")
 
     pdf_folder = "pdf"
     # Lista dei PDF solo con nome visibile, ma mantieni path interno
@@ -92,7 +92,7 @@ def interfaccia_pdf():
         st.rerun()
 
 def interfaccia_id_gia_visitati():
-    st.header("📌 ID già visitati")
+    st.header("🧹 ID già visitati")
 
     with st.expander("➕ Aggiungi nuovi ID visitati"):
         nuovi_id = st.text_area("Inserisci uno o più ID progetto separati da virgola, spazio, punto o punto e virgola")
@@ -149,7 +149,7 @@ def interfaccia_id_gia_visitati():
 
 
 def interfaccia_filtro_nomi():
-    st.header("🚫 Nomi aziende da filtrare")
+    st.header("🧹 Nomi aziende da filtrare")
 
     if os.path.exists(NOMI_FILE):
         df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
