@@ -51,7 +51,8 @@ if sezione == "🧠 Ottimizza visite":
             df_blocchi = completa_blocchi(df_blocchi, csv_path)
             html_path = genera_mappa(df_blocchi, csv_path)
 
-            st.session_state["df_blocchi"] = df_blocchi  # 🔁 SALVA in sessione
+            # Salva anche la versione "pulita" per uso con salvataggio
+            st.session_state["df_blocchi"] = df_blocchi.copy()
             st.success("✅ Tutti i file generati con successo")
 
     # === VISUALIZZAZIONE BLOCCO SOLO SE ESISTE ===
@@ -69,15 +70,20 @@ if sezione == "🧠 Ottimizza visite":
             ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
             nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
             path_file = os.path.join("cronologia", nome_file)
-        
-            # 🔒 Forza conversione a stringa della colonna Link Google Maps
-            if "Link Google Maps" in df_blocco_singolo.columns:
-                df_blocco_singolo["Link Google Maps"] = df_blocco_singolo["Link Google Maps"].astype(str)
-        
+
+            # HYPERLINK già incluso come stringa, nessuna modifica necessaria
             df_blocco_singolo.to_excel(path_file, index=False)
             st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
 
+        if st.button("💾 Salva su Google Sheets"):
+            from google_sheets import salva_blocco_su_google_sheets, registra_blocco_in_storico
 
+            ora = datetime.now().strftime("%Y-%m-%d %H:%M")
+            nome_tab = f"Blocco_{blocco_scelto}_{ora}"
+
+            salva_blocco_su_google_sheets(df_blocco_singolo, nome_tab)
+            registra_blocco_in_storico(nome_tab, ora, len(df_blocco_singolo))
+            st.success(f"✅ Blocco salvato su Google Sheets come '{nome_tab}'")
 
 # === ESTRAZIONE PDF APPALTI ===
 elif sezione == "🖥️ Parsing PDF":
