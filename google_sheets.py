@@ -23,11 +23,11 @@ def get_worksheet(tab_name):
         worksheet = spreadsheet.add_worksheet(title=tab_name, rows="100", cols="3")
         
         if tab_name == "ID_Visitati":
-            worksheet.append_row(["ID Progetto", "Data", "Note"])
+            worksheet.append_row(["ID Progetto", "Data Salvataggio", "Note"])
         elif tab_name == "Nomi_Esclusi":
-            worksheet.append_row(["Nome", "Data", "Note"])
+            worksheet.append_row(["Nome", "Data Salvataggio", "Note"])
         elif tab_name == "Storico_Blocchi":
-            worksheet.append_row(["Nome Blocco", "Data", "N. Aziende"])
+            worksheet.append_row(["Nome Blocco", "Data Salvataggio", "N. Aziende"])
 
 
     return worksheet
@@ -72,8 +72,15 @@ def salva_blocco_su_google_sheets(df, nome_tab):
     df_clean = df_clean.fillna("")
 
     ws.append_row(df_clean.columns.tolist())
-    for row in df_clean.itertuples(index=False):
-        ws.append_row(list(row))
+    for row in df.itertuples(index=False):
+        valori = []
+        for cella in row:
+            if isinstance(cella, float) and pd.isna(cella):
+                valori.append("")  # Evita NaN
+            else:
+                valori.append(str(cella))
+        ws.append_row(valori)
+
 
 def registra_blocco_in_storico(nome, data, righe):
     ws = get_worksheet("Storico_Blocchi")
