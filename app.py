@@ -52,7 +52,6 @@ if sezione == "🧠 Ottimizza visite":
             html_path = genera_mappa(df_blocchi, csv_path)
 
             st.session_state["df_blocchi"] = df_blocchi  # 🔁 SALVA in sessione
-
             st.success("✅ Tutti i file generati con successo")
 
     # === VISUALIZZAZIONE BLOCCO SOLO SE ESISTE ===
@@ -71,6 +70,7 @@ if sezione == "🧠 Ottimizza visite":
             nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
             path_file = os.path.join("cronologia", nome_file)
 
+            # ✅ Formatta i link per Excel
             if "Link Google Maps" in df_blocco_singolo.columns:
                 df_blocco_singolo["Link Google Maps"] = df_blocco_singolo["Link Google Maps"].apply(
                     lambda url: f'=HYPERLINK("{url}", "Apri mappa")' if pd.notna(url) and "http" in url else ""
