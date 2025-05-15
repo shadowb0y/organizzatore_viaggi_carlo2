@@ -149,7 +149,7 @@ def interfaccia_id_gia_visitati():
 
 
 def interfaccia_filtro_nomi():
-    st.header("🚫 Aziende da filtrare")
+    st.header("🚫 Nomi aziende da filtrare")
 
     if os.path.exists(NOMI_FILE):
         df_nomi = pd.read_csv(NOMI_FILE, header=None, dtype=str).dropna()
