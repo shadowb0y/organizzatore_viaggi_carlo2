@@ -55,12 +55,16 @@ def elimina_nome_escluso(index):
     ws = get_worksheet(TAB_NOMI_ESCLUSI)
     ws.delete_rows(index + 2)  # +2 perché header e 1-based
 
-
 def salva_blocco_su_google_sheets(df, nome_tab):
     ws = get_worksheet(nome_tab)
     ws.clear()
-    ws.append_row(df.columns.tolist())
-    for row in df.itertuples(index=False):
+
+    # ✅ Rimuove valori non compatibili con JSON (come NaN, inf, -inf)
+    df_clean = df.replace([float("inf"), float("-inf")], None)
+    df_clean = df_clean.fillna("")
+
+    ws.append_row(df_clean.columns.tolist())
+    for row in df_clean.itertuples(index=False):
         ws.append_row(list(row))
 
 def registra_blocco_in_storico(nome, data, righe):
