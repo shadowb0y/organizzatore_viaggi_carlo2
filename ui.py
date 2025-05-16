@@ -230,17 +230,25 @@ def interfaccia_cronologia():
         with col2:
             if st.button("🗑", key=f"del_blocco_{i}"):
                 st.session_state[f"conferma_blocco_{i}"] = True
-
+            
             if st.session_state.get(f"conferma_blocco_{i}", False):
                 with st.expander(f"⚠️ Conferma eliminazione '{row['Nome Blocco']}'", expanded=True):
-                    st.warning("Questa azione eliminerà il blocco da Google Sheets. Procedere?")
+                    st.warning("Questa azione eliminerà il blocco sia dallo storico che dal Google Sheets. Procedere?")
+            
                     if st.button("✅ Elimina definitivamente", key=f"conferma_del_blocco_{i}"):
                         try:
+                            from google_sheets import elimina_blocco_storico, elimina_tab_blocco
+            
+                            # 🧠 Prima elimina dallo storico
                             elimina_blocco_storico(i)
-                            ws = get_worksheet(row["Nome Blocco"])
-                            ws.clear()
-                            st.success(f"✅ Blocco '{row['Nome Blocco']}' eliminato.")
+            
+                            # 🧼 Poi elimina anche il tab vero e proprio (se esiste)
+                            elimina_tab_blocco(row["Nome Blocco"])
+            
+                            st.success(f"✅ Blocco '{row['Nome Blocco']}' eliminato da storico e da Google Sheets.")
                         except Exception as e:
-                            st.error(f"Errore durante eliminazione: {e}")
-                        st.session_state.pop(f"conferma_blocco_{i}")
-                        st.rerun()
+                            st.error(f"❌ Errore durante eliminazione: {e}")
+                        finally:
+                            st.session_state.pop(f"conferma_blocco_{i}", None)
+                            st.rerun()
+

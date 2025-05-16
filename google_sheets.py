@@ -96,7 +96,22 @@ def elimina_blocco_storico(index):
     ws = get_worksheet("Storico_Blocchi")
     ws.delete_rows(index + 2)  # +2 per header + 1-based
 
+def elimina_tab_blocco(nome_tab):
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name(".streamlit/creds.json", scope)
+    client = gspread.authorize(creds)
 
-def elimina_contenuto_blocco(nome_tab):
-    ws = get_worksheet(nome_tab)
-    ws.clear()
+    spreadsheet = client.open(SHEET_NAME)
+
+    try:
+        worksheet = spreadsheet.worksheet(nome_tab)
+        spreadsheet.del_worksheet(worksheet)
+    except gspread.exceptions.WorksheetNotFound:
+        pass  # Il foglio è già stato eliminato
+
+
+
+
