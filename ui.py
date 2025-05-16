@@ -222,6 +222,26 @@ def interfaccia_cronologia():
                     ws = get_worksheet(row["Nome Blocco"])
                     df_contenuto = pd.DataFrame(ws.get_all_records())
                     st.dataframe(df_contenuto, use_container_width=True)
+
+                    # 🔽 Bottone per scaricare il blocco come Excel
+                    nome_file_excel = f"{row['Nome Blocco']}.xlsx"
+                    buffer = df_contenuto.to_excel(index=False, engine='openpyxl')
+                    st.download_button(
+                        label="📥 Scarica come Excel",
+                        data=buffer,
+                        file_name=nome_file_excel,
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        key=f"dl_blocco_{i}"
+                    )
+            
+
+
+
+
+
+
+
+
                 except Exception as e:
                     st.error(f"Errore nel caricamento del blocco '{row['Nome Blocco']}': {e}")
 
@@ -230,21 +250,21 @@ def interfaccia_cronologia():
         with col2:
             if st.button("🗑", key=f"del_blocco_{i}"):
                 st.session_state[f"conferma_blocco_{i}"] = True
-            
+
             if st.session_state.get(f"conferma_blocco_{i}", False):
                 with st.expander(f"⚠️ Conferma eliminazione '{row['Nome Blocco']}'", expanded=True):
                     st.warning("Questa azione eliminerà il blocco sia dallo storico che dal Google Sheets. Procedere?")
-            
+
                     if st.button("✅ Elimina definitivamente", key=f"conferma_del_blocco_{i}"):
                         try:
                             from google_sheets import elimina_blocco_storico, elimina_tab_blocco
-            
+
                             # 🧠 Prima elimina dallo storico
                             elimina_blocco_storico(i)
-            
+
                             # 🧼 Poi elimina anche il tab vero e proprio (se esiste)
                             elimina_tab_blocco(row["Nome Blocco"])
-            
+
                             st.success(f"✅ Blocco '{row['Nome Blocco']}' eliminato da storico e da Google Sheets.")
                         except Exception as e:
                             st.error(f"❌ Errore durante eliminazione: {e}")
