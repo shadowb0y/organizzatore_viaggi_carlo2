@@ -12,24 +12,23 @@ SHEET_NAME = "streamlitorganizzazioneviaggi"
 TAB_ID_VISITATI = "ID_Visitati"
 TAB_NOMI_ESCLUSI = "Nomi_Esclusi"
 
-=== FUNZIONE UNIVERSALE PER OTTENERE CREDENZIALI ===
 def get_creds():
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
     ]
-    # Streamlit Cloud: carica da secrets
+
     try:
         creds_dict = dict(st.secrets["gcp_service_account"])
         return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    except Exception:
-        pass  # Se non disponibile, passa al tentativo successivo
-    # Locale: carica da file creds.json
+    except Exception as e:
+        st.error("Errore nel caricamento delle credenziali dai secrets.")
+        st.exception(e)
+
     if os.path.exists("creds.json"):
         return ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
-    else:
-        st.error("❌ Nessuna credenziale trovata: né in st.secrets né in creds.json.")
-        raise FileNotFoundError("Credenziali non trovate.")
+
+    raise FileNotFoundError("Credenziali non trovate.")
 
 
 
