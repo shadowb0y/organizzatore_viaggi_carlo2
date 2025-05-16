@@ -85,3 +85,18 @@ def salva_blocco_su_google_sheets(df, nome_tab):
 def registra_blocco_in_storico(nome, data, righe):
     ws = get_worksheet("Storico_Blocchi")
     ws.append_row([nome, data, righe])
+
+
+def leggi_blocchi_salvati_su_google_sheets():
+    ws = get_worksheet("Storico_Blocchi")
+    records = ws.get_all_records()
+    return pd.DataFrame(records)
+
+def elimina_blocco_storico(index):
+    ws = get_worksheet("Storico_Blocchi")
+    ws.delete_rows(index + 2)  # +2 per header + 1-based
+
+
+def elimina_contenuto_blocco(nome_tab):
+    ws = get_worksheet(nome_tab)
+    ws.clear()

@@ -80,16 +80,25 @@ def estrai_dati_da_pdf(pdf_files, valore_minimo, data_limite):
 
 def pulisci_unifica_filtra(df):
     # === Carica ID già visitati ===
-    id_da_escludere = set()
-    if os.path.exists(ID_VISITATI_FILE):
-        with open(ID_VISITATI_FILE, "r", encoding="utf-8") as f:
-            id_da_escludere = {r["ID Progetto"].strip() for r in json.load(f)}
+    from google_sheets import leggi_id_visitati
+    df_id_visitati = leggi_id_visitati()
+    col_id = [c for c in df_id_visitati.columns if "id" in c.lower() and "progetto" in c.lower()]
+    if col_id:
+        id_da_escludere = set(df_id_visitati[col_id[0]].astype(str))
+    else:
+        id_da_escludere = set()
+        print("⚠️ Nessuna colonna trovata per 'ID Progetto'")
+
+
 
     # === Carica nomi da escludere ===
-    nomi_da_escludere = set()
-    if os.path.exists(NOMI_ESCLUSI_FILE):
-        with open(NOMI_ESCLUSI_FILE, "r", encoding="utf-8") as f:
-            nomi_da_escludere = {r["Nome"].lower().strip() for r in json.load(f)}
+    from google_sheets import leggi_nomi_esclusi
+
+    try:
+        df_nomi_esclusi = leggi_nomi_esclusi()
+        nomi_da_escludere = set(df_nomi_esclusi["Nome"].dropna().str.lower().str.strip())
+    except:
+        nomi_da_escludere = set()
 
     final_rows = []
     for id_progetto, gruppo in df.groupby("ID Progetto"):

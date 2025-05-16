@@ -31,17 +31,46 @@ if not st.session_state.get("gia_pulito", False):
     st.session_state["gia_pulito"] = True
 
 # === SEZIONI ===
-sezione = st.sidebar.selectbox(
+
+# === Lista voci
+voci = [
+    "🖥️ Parsing PDF",
+    "🧠 Ottimizza visite",
+    "🧹 Filtro ID",
+    "🧹 Filtro nomi imprese",
+    "📂 Storico blocchi"
+]
+
+# === Imposta sezione iniziale se non esiste
+if "sezione_attiva" not in st.session_state:
+    st.session_state["sezione_attiva"] = "🖥️ Parsing PDF"
+
+# === Selectbox reattiva (sincronizzata con session_state)
+selezionata = st.sidebar.selectbox(
     "Seleziona una sezione",
-    [
-        "🧠 Ottimizza visite",
-        "🖥️ Parsing PDF",
-        "🧹 Filtro ID",
-        "🧹 Filtro nomi imprese",
-        "📂 Storico blocchi"
-    ],
-    index=0
+    voci,
+    index=voci.index(st.session_state["sezione_attiva"]),
+    key="selectbox_sezione"
 )
+
+# === Aggiorna sezione attiva se è stata cambiata manualmente
+if st.session_state["sezione_attiva"] != st.session_state["selectbox_sezione"]:
+    st.session_state["sezione_attiva"] = st.session_state["selectbox_sezione"]
+
+# === Sezione corrente usata nel main
+sezione = st.session_state["sezione_attiva"]
+
+
+
+
+
+
+
+
+
+
+
+
 if sezione == "🧠 Ottimizza visite":
     csv_path, json_path, tempo_visita, tempo_massimo = interfaccia()
 
@@ -66,15 +95,6 @@ if sezione == "🧠 Ottimizza visite":
         df_blocco_singolo = df_blocchi[df_blocchi["Blocco"] == blocco_scelto].copy()
         st.dataframe(df_blocco_singolo, use_container_width=True)
 
-        if st.button("📥 Scarica blocco selezionato"):
-            ora = datetime.now().strftime("%Y-%m-%d_%H-%M")
-            nome_file = f"blocco_{blocco_scelto}_{ora}.xlsx"
-            path_file = os.path.join("cronologia", nome_file)
-
-            # HYPERLINK già incluso come stringa, nessuna modifica necessaria
-            df_blocco_singolo.to_excel(path_file, index=False)
-            st.success(f"✅ Blocco {blocco_scelto} salvato in cronologia come {nome_file}")
-
         if st.button("💾 Salva su Google Sheets"):
             from google_sheets import salva_blocco_su_google_sheets, registra_blocco_in_storico
 
@@ -84,7 +104,13 @@ if sezione == "🧠 Ottimizza visite":
             salva_blocco_su_google_sheets(df_blocco_singolo, nome_tab)
             registra_blocco_in_storico(nome_tab, ora, len(df_blocco_singolo))
             st.success(f"✅ Blocco salvato su Google Sheets come '{nome_tab}'")
+            
+            # 🔁 Redirect automatico alla sezione "Storico blocchi"
+            st.session_state["sezione_attiva"] = "📂 Storico blocchi"
+            st.rerun()
 
+
+            
 # === ESTRAZIONE PDF APPALTI ===
 elif sezione == "🖥️ Parsing PDF":
     interfaccia_pdf()

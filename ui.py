@@ -67,20 +67,15 @@ def interfaccia_pdf():
 
     if st.button("Estrai e filtra dati", key="estrai_pdf"):
         from estrattore import estrai_dati_da_pdf, pulisci_unifica_filtra
+        from filtra_dataset import filtra_dati  # <--- già qui
 
         df_raw = estrai_dati_da_pdf(selected_files, filtro_valore_minimo, filtro_data_limite)
         df_filtrato = pulisci_unifica_filtra(df_raw)
-
         df_filtrato.to_csv(output_path, index=False, encoding="utf-8-sig")
-
         st.success("Estrazione completata")
         st.dataframe(df_filtrato)
-        st.download_button("Scarica CSV filtrato", data=df_filtrato.to_csv(index=False).encode("utf-8-sig"), file_name=output_path)
 
-    st.subheader("Filtra file geocodificato e matrice distanze")
-    if st.button("Applica filtro agli altri file", key="filtro_finale"):
-        from filtra_dataset import filtra_dati
-
+        # Subito dopo, applica il filtro
         input_csv_geo = "data/aziende_geocodificate.csv"
         input_matrice_json = "data/matrice_durate.json"
         output_csv_geo = "output/aziende_geocodificate_filtrate.csv"
@@ -88,9 +83,13 @@ def interfaccia_pdf():
 
         df_geo_filtrato, _ = filtra_dati(output_path, input_csv_geo, input_matrice_json, output_csv_geo, output_matrice_json)
         st.success("✅ File geocodificato e matrice filtrati correttamente")
-
-        st.session_state["sezione_attiva"] = "Blocchi Visite Aziendali"
+        st.session_state["sezione_attiva"] = "🧠 Ottimizza visite"
         st.rerun()
+
+
+
+
+
 def interfaccia_id_gia_visitati():
     st.header("🧹 ID già visitati")
 
@@ -113,10 +112,12 @@ def interfaccia_id_gia_visitati():
     if not df_id_visitati.empty:
         st.markdown("### 📄 ID visitati salvati:")
 
-        for i, row in df_id_visitati.sort_values(by="Data", ascending=False).iterrows():
+        for i, row in df_id_visitati.sort_values(by="Data Salvataggio", ascending=False).iterrows():
+
             col1, col2, col3 = st.columns([4, 2, 1])
             with col1:
-                st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data']} – 📝 {row.get('Note', '')}")
+                st.write(f"🆔 {row['ID Progetto']} – 📅 {row['Data Salvataggio']} – 📝 {row.get('Note', '')}")
+
             with col3:
                 if st.button("❌", key=f"del_id_{i}"):
                     st.session_state[f"conferma_id_{i}"] = True
@@ -131,26 +132,56 @@ def interfaccia_id_gia_visitati():
 
 
 from google_sheets import leggi_nomi_esclusi, aggiungi_nomi_esclusi, elimina_nome_escluso
+from google_sheets import leggi_nomi_esclusi, aggiungi_nomi_esclusi, elimina_nome_escluso
+import streamlit as st
+import pandas as pd
+from datetime import date
 
 def interfaccia_filtro_nomi():
     st.header("🧹 Nomi aziende da filtrare")
 
     with st.expander("➕ Aggiungi nuovi nomi da escludere"):
-        nuovi_nomi = st.text_area("Inserisci uno o più nomi separati da virgola, punto e virgola o a capo")
+        # === Leggi nomi esclusi già presenti su Google Sheets
+        df_esclusi_sheet = leggi_nomi_esclusi()
+        nomi_esclusi = set(df_esclusi_sheet["Nome"]) if not df_esclusi_sheet.empty else set()
+
+        # === Leggi tutti i nomi da data/nomi.csv
+        try:
+            df_tutti_nomi = pd.read_csv("data/nomi.csv")
+            nomi_tutti = set(df_tutti_nomi["Nome"].dropna().unique())
+        except Exception as e:
+            st.warning(f"⚠️ Impossibile leggere 'data/nomi.csv': {e}")
+            nomi_tutti = set()
+
+        # === Unione nomi già esclusi + tutti quelli disponibili
+        nomi_esistenti = sorted(nomi_tutti.union(nomi_esclusi))
+
+        # === Campo multiselect con suggerimenti
+        nuovi_nomi = st.multiselect(
+            "Seleziona o scrivi nuovi nomi da escludere",
+            options=nomi_esistenti,
+            default=[],
+            help="Puoi anche scrivere nuovi nomi e premere Invio"
+        )
+
         nota = st.text_input("Note (facoltative)", key="nota_esclusione_nomi")
         data_esclusione = st.date_input("Data", value=date.today(), key="data_esclusione_nomi")
 
         if st.button("Salva nomi esclusi"):
-            nomi = [n.strip() for n in re.split(r"[,\n;\r]+", nuovi_nomi) if n.strip()]
+            nomi = [n.strip() for n in nuovi_nomi if n.strip()]
             if nomi:
                 aggiungi_nomi_esclusi(nomi, data_esclusione, nota)
                 st.success(f"✅ Salvati {len(nomi)} nomi esclusi.")
                 st.rerun()
 
+    # === Visualizzazione nomi esclusi
     df_esclusi = leggi_nomi_esclusi()
 
     if not df_esclusi.empty:
         st.markdown("### 📄 Nomi esclusi salvati:")
+
+        # ✅ Rinomina colonna per sorting
+        df_esclusi = df_esclusi.rename(columns={"Data Salvataggio": "Data"})
 
         for i, row in df_esclusi.sort_values(by="Data", ascending=False).iterrows():
             col1, col2 = st.columns([5, 1])
@@ -168,55 +199,48 @@ def interfaccia_filtro_nomi():
                             st.session_state.pop(f"conferma_nome_{i}")
                             st.rerun()
 
-
-
-
-
 def interfaccia_cronologia():
     st.title("📂 Cronologia blocchi salvati")
 
-    cartella = "cronologia"
-    files_cronologia = sorted([f for f in os.listdir(cartella) if f.endswith(".xlsx")], reverse=True)
+    from google_sheets import leggi_blocchi_salvati_su_google_sheets, get_worksheet, elimina_blocco_storico
 
-    if not files_cronologia:
-        st.info("Nessun blocco salvato ancora.")
+    try:
+        df_blocchi = leggi_blocchi_salvati_su_google_sheets()
+    except Exception as e:
+        st.error(f"Errore durante il caricamento da Google Sheets: {e}")
         return
 
-    for nome_file in files_cronologia:
-        path = os.path.join(cartella, nome_file)
+    if df_blocchi.empty:
+        st.info("Nessun blocco salvato su Google Sheets.")
+        return
 
+    for i, row in df_blocchi.sort_values(by="Data Salvataggio", ascending=False).iterrows():
         col1, col2 = st.columns([8, 1])
         with col1:
-            st.markdown(f"### 📄 {nome_file}")
+            with st.expander(f"📄 {row['Nome Blocco']}"):
+                try:
+                    ws = get_worksheet(row["Nome Blocco"])
+                    df_contenuto = pd.DataFrame(ws.get_all_records())
+                    st.dataframe(df_contenuto, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Errore nel caricamento del blocco '{row['Nome Blocco']}': {e}")
 
-            # 👇 Usa copia da session_state se disponibile
-            df = st.session_state.get(f"df_blocco_{nome_file}", None)
-            if df is None:
-                df = pd.read_excel(path)
-
-            st.dataframe(df, use_container_width=True)
-            with open(path, "rb") as f:
-                st.download_button("Scarica (il blocco che vedi sopra)", f, file_name=nome_file, key=f"dl_{nome_file}")
-
-            nome_tab = nome_file.replace(".xlsx", "").replace(":", "-").replace(" ", "_")
-            if st.button(f"🔁 Salva su Google Sheets", key=f"save_google_{nome_file}"):
-                salva_blocco_su_google_sheets(df, nome_tab)
-                registra_blocco_in_storico(nome_tab, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), len(df))
-                st.success(f"✅ Salvato su Google Sheets come '{nome_tab}'")
-
+                st.markdown(f"📅 **Data**: {row['Data Salvataggio']} &nbsp;&nbsp;&nbsp; 🏢 **Aziende**: {row['N. Aziende']}")
+        
         with col2:
-            if st.button("🗑", key=f"del_{nome_file}"):
-                st.session_state[f"conferma_{nome_file}"] = True
+            if st.button("🗑", key=f"del_blocco_{i}"):
+                st.session_state[f"conferma_blocco_{i}"] = True
 
-            if st.session_state.get(f"conferma_{nome_file}", False):
-                with st.expander(f"⚠️ Conferma eliminazione '{nome_file}'", expanded=True):
-                    st.warning("Questa azione eliminerà definitivamente il file. Procedere?")
-                    if st.button("✅ Elimina definitivamente", key=f"conferma_del_{nome_file}"):
-                        if os.path.exists(path):
-                            os.remove(path)
-                            st.success(f"✅ File '{nome_file}' eliminato.")
-                            st.session_state.pop(f"conferma_{nome_file}")
-                            st.rerun()
-                        else:
-                            st.error(f"❌ File '{nome_file}' non trovato.")
-                            st.session_state.pop(f"conferma_{nome_file}")
+            if st.session_state.get(f"conferma_blocco_{i}", False):
+                with st.expander(f"⚠️ Conferma eliminazione '{row['Nome Blocco']}'", expanded=True):
+                    st.warning("Questa azione eliminerà il blocco da Google Sheets. Procedere?")
+                    if st.button("✅ Elimina definitivamente", key=f"conferma_del_blocco_{i}"):
+                        try:
+                            elimina_blocco_storico(i)
+                            ws = get_worksheet(row["Nome Blocco"])
+                            ws.clear()
+                            st.success(f"✅ Blocco '{row['Nome Blocco']}' eliminato.")
+                        except Exception as e:
+                            st.error(f"Errore durante eliminazione: {e}")
+                        st.session_state.pop(f"conferma_blocco_{i}")
+                        st.rerun()
