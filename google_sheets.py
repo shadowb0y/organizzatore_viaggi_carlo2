@@ -42,7 +42,8 @@ def get_creds():
     st.write("DEBUG: st.secrets keys →", list(st.secrets.keys()))  # 👈 AGGIUNTA
 
     try:
-        creds_dict = json.loads(st.secrets["gcp_service_account"])
+        creds_dict = dict(st.secrets["gcp_service_account"])
+
         return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     except Exception as e:
         st.error("Errore nel caricamento delle credenziali dai secrets.")
