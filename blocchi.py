@@ -14,7 +14,8 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
 
     df_aziende = pd.read_csv(csv_path, dtype={"ID Progetto": str})
     df_aziende = df_aziende.drop_duplicates(subset="Indirizzo", keep="first")
-    info_aziende = df_aziende.set_index("ID Progetto")[["Indirizzo", "Imprese"]].to_dict("index")
+    info_aziende = df_aziende.set_index("ID Progetto")[["Indirizzo", "Imprese", "Valore Stimato"]].to_dict("index")
+
 
     valid_ids = df_aziende["ID Progetto"].tolist()
     id2idx = {k: i for i, k in enumerate(valid_ids)}
