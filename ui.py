@@ -214,6 +214,8 @@ def interfaccia_cronologia():
         st.info("Nessun blocco salvato su Google Sheets.")
         return
 
+    import io  # se non lo hai già in cima al file
+    
     for i, row in df_blocchi.sort_values(by="Data Salvataggio", ascending=False).iterrows():
         col1, col2 = st.columns([8, 1])
         with col1:
@@ -222,10 +224,12 @@ def interfaccia_cronologia():
                     ws = get_worksheet(row["Nome Blocco"])
                     df_contenuto = pd.DataFrame(ws.get_all_records())
                     st.dataframe(df_contenuto, use_container_width=True)
-
-                    # 🔽 Bottone per scaricare il blocco come Excel
+    
+                    # 🔽 Scarica Excel
                     nome_file_excel = f"{row['Nome Blocco']}.xlsx"
-                    buffer = df_contenuto.to_excel(index=False, engine='openpyxl')
+                    buffer = io.BytesIO()
+                    df_contenuto.to_excel(buffer, index=False, engine='openpyxl')
+                    buffer.seek(0)
                     st.download_button(
                         label="📥 Scarica come Excel",
                         data=buffer,
@@ -233,20 +237,12 @@ def interfaccia_cronologia():
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         key=f"dl_blocco_{i}"
                     )
-            
-
-
-
-
-
-
-
-
+    
                 except Exception as e:
                     st.error(f"Errore nel caricamento del blocco '{row['Nome Blocco']}': {e}")
-
-                st.markdown(f"📅 **Data**: {row['Data Salvataggio']} &nbsp;&nbsp;&nbsp; 🏢 **Aziende**: {row['N. Aziende']}")
-        
+    
+        st.markdown(f"📅 **Data**: {row['Data Salvataggio']} &nbsp;&nbsp;&nbsp; 🏢 **Aziende**: {row['N. Aziende']}")
+    
         with col2:
             if st.button("🗑", key=f"del_blocco_{i}"):
                 st.session_state[f"conferma_blocco_{i}"] = True
