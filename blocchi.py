@@ -74,8 +74,10 @@ def genera_blocchi(csv_path, json_path, tempo_visita, tempo_massimo):
                 "ID Progetto": id_,
                 "Indirizzo": info["Indirizzo"],
                 "Impresa": info["Imprese"],
+                "Valore Stimato": info.get("Valore Stimato", ""),
                 "Tempo cumulato (s)": tempo_cumulato
             })
+
             if ordine < len(blocco):
                 next_id = blocco[ordine]
                 if G.has_edge(id_, next_id):
