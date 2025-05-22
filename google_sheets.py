@@ -36,7 +36,8 @@ def get_creds():
 def get_worksheet(tab_name):
     creds = get_creds()
     client = gspread.authorize(creds)
-    spreadsheet = client.open(SHEET_NAME)
+    spreadsheet = client.open_by_key("1V1gmo9SlvooMwcgQe_YucQnDJMlnX122VINowlYFXR4")
+
 
     try:
         worksheet = spreadsheet.worksheet(tab_name)
