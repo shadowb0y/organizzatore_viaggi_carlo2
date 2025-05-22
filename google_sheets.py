@@ -8,7 +8,7 @@ import streamlit as st
 import os
 
 # === CONFIGURAZIONE GOOGLE SHEETS ===
-SHEET_NAME = "streamlitorganizzazioneviaggi"
+SHEET_NAME = "streamlit_organizzazione_viaggi_carlo"
 TAB_ID_VISITATI = "ID_Visitati"
 TAB_NOMI_ESCLUSI = "Nomi_Esclusi"
 
