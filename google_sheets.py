@@ -110,7 +110,8 @@ def elimina_blocco_storico(index):
 def elimina_tab_blocco(nome_tab):
     creds = get_creds()
     client = gspread.authorize(creds)
-    spreadsheet = client.open(SHEET_ID)
+    spreadsheet = client.open_by_key(SHEET_ID)
+
 
     try:
         worksheet = spreadsheet.worksheet(nome_tab)
