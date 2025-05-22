@@ -12,27 +12,24 @@ import os
 SHEET_ID = "1V1gmo9SlvooMwcgQe_YucQnDJMlnX122VINowlYFXR4"
 TAB_ID_VISITATI = "ID_Visitati"
 TAB_NOMI_ESCLUSI = "Nomi_Esclusi"
+
 def get_creds():
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds_dict = dict(st.secrets["gcp_service_account"])
-    client_email = creds_dict["client_email"]
-    st.write("✅ Service Account:", client_email)
 
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    client = gspread.authorize(creds)
-
-    # TEST: vedi se riesce a leggere tutti i file accessibili
     try:
-        files = client.list_spreadsheet_files()
-        st.write("📄 Fogli trovati:", [f["name"] for f in files])
+        creds_dict = dict(st.secrets["gcp_service_account"])
+        return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     except Exception as e:
-        st.error("Errore nel leggere i fogli accessibili:")
+        st.error("Errore nel caricamento delle credenziali dai secrets.")
         st.exception(e)
 
-    return creds
+    if os.path.exists("creds.json"):
+        return ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+
+    raise FileNotFoundError("Credenziali non trovate.")
 
 
 
