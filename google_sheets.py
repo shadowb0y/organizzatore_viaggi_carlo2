@@ -8,7 +8,8 @@ import streamlit as st
 import os
 
 # === CONFIGURAZIONE GOOGLE SHEETS ===
-SHEET_NAME = "streamlit_organizzazione_viaggi_carlo"
+# SHEET_NAME = "streamlit_organizzazione_viaggi_carlo"
+SHEET_ID = "1V1gmo9SlvooMwcgQe_YucQnDJMlnX122VINowlYFXR4"
 TAB_ID_VISITATI = "ID_Visitati"
 TAB_NOMI_ESCLUSI = "Nomi_Esclusi"
 
@@ -36,7 +37,7 @@ def get_creds():
 def get_worksheet(tab_name):
     creds = get_creds()
     client = gspread.authorize(creds)
-    spreadsheet = client.open_by_key("1V1gmo9SlvooMwcgQe_YucQnDJMlnX122VINowlYFXR4")
+    spreadsheet = client.open_by_key(SHEET_ID)
 
 
     try:
@@ -109,7 +110,7 @@ def elimina_blocco_storico(index):
 def elimina_tab_blocco(nome_tab):
     creds = get_creds()
     client = gspread.authorize(creds)
-    spreadsheet = client.open(SHEET_NAME)
+    spreadsheet = client.open(SHEET_ID)
 
     try:
         worksheet = spreadsheet.worksheet(nome_tab)
