@@ -12,7 +12,6 @@ import os
 SHEET_ID = "1V1gmo9SlvooMwcgQe_YucQnDJMlnX122VINowlYFXR4"
 TAB_ID_VISITATI = "ID_Visitati"
 TAB_NOMI_ESCLUSI = "Nomi_Esclusi"
-
 def get_creds():
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -21,6 +20,10 @@ def get_creds():
 
     try:
         creds_dict = dict(st.secrets["gcp_service_account"])
+        
+        # 🔎 STAMPA L'EMAIL DEL SERVICE ACCOUNT
+        st.write("Service Account in uso:", creds_dict["client_email"])
+        
         return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     except Exception as e:
         st.error("Errore nel caricamento delle credenziali dai secrets.")
