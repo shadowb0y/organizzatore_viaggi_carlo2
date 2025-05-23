@@ -9,3 +9,4 @@ PyMuPDF
 datetime
 gspread
 oauth2client
+streamlit-js-eval
