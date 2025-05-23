@@ -11,18 +11,20 @@ from datetime import datetime
 # === Geolocalizzazione ===
 def rileva_posizione():
     st.markdown("""
-    <script>
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            const coords = {
-                lat: position.coords.latitude,
-                lon: position.coords.longitude
-            };
-            window.parent.postMessage(coords, "*");
-        }
-    );
-    </script>
-    """, unsafe_allow_html=True)
+<script>
+navigator.geolocation.getCurrentPosition(
+    function(position) {
+        window.latitude = position.coords.latitude;
+        window.longitude = position.coords.longitude;
+    },
+    function(error) {
+        window.latitude = null;
+        window.longitude = null;
+    }
+);
+</script>
+""", unsafe_allow_html=True)
+
 
     posizione = st.empty()
     coords = streamlit_js_eval(js_expressions="({lat: window.latitude, lon: window.longitude})", key="geo")
