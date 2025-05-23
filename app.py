@@ -9,32 +9,34 @@ import pandas as pd
 from datetime import datetime
 
 # === Geolocalizzazione ===
+# === Geolocalizzazione ===
 def rileva_posizione():
     st.markdown("""
-<script>
-navigator.geolocation.getCurrentPosition(
-    function(position) {
-        window.latitude = position.coords.latitude;
-        window.longitude = position.coords.longitude;
-    },
-    function(error) {
-        window.latitude = null;
-        window.longitude = null;
-    }
-);
-</script>
-""", unsafe_allow_html=True)
-
+    <script>
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            window.latitude = position.coords.latitude;
+            window.longitude = position.coords.longitude;
+        },
+        function(error) {
+            window.latitude = null;
+            window.longitude = null;
+        }
+    );
+    </script>
+    """, unsafe_allow_html=True)
 
     posizione = st.empty()
+    from streamlit_js_eval import streamlit_js_eval
     coords = streamlit_js_eval(js_expressions="({lat: window.latitude, lon: window.longitude})", key="geo")
 
     if coords and coords.get("lat") is not None:
-        posizione.success(f"\U0001F4CD Posizione rilevata: {coords['lat']}, {coords['lon']}")
+        posizione.success(f"📍 Posizione rilevata: {coords['lat']}, {coords['lon']}")
         return coords["lat"], coords["lon"]
     else:
-        posizione.warning("\U0001F4F0 In attesa di autorizzazione alla posizione...")
+        posizione.warning("📡 In attesa di autorizzazione alla posizione...")
         return None, None
+
 
 st.set_page_config(layout="wide")
 
