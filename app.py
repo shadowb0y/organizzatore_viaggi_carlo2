@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
 from blocchi import genera_blocchi
 from completamento import completa_blocchi
 from mappa import genera_mappa
@@ -8,34 +7,6 @@ import os
 import pandas as pd
 from datetime import datetime
 
-# === Geolocalizzazione ===
-# === Geolocalizzazione ===
-def rileva_posizione():
-    st.markdown("""
-    <script>
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            window.latitude = position.coords.latitude;
-            window.longitude = position.coords.longitude;
-        },
-        function(error) {
-            window.latitude = null;
-            window.longitude = null;
-        }
-    );
-    </script>
-    """, unsafe_allow_html=True)
-
-    posizione = st.empty()
-    from streamlit_js_eval import streamlit_js_eval
-    coords = streamlit_js_eval(js_expressions="({lat: window.latitude, lon: window.longitude})", key="geo")
-
-    if coords and coords.get("lat") is not None:
-        posizione.success(f"📍 Posizione rilevata: {coords['lat']}, {coords['lon']}")
-        return coords["lat"], coords["lon"]
-    else:
-        posizione.warning("📡 In attesa di autorizzazione alla posizione...")
-        return None, None
 
 
 st.set_page_config(layout="wide")
